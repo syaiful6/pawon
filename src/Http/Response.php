@@ -2,6 +2,8 @@
 
 namespace Pawon\Http;
 
+use Countable;
+use Traversable;
 use RuntimeException;
 use IteratorAggregate;
 use Zend\Stratigility\Http\Response as BaseResponse;
@@ -36,7 +38,7 @@ class Response extends BaseResponse implements IteratorAggregate
     {
         $body = $this->getBody();
 
-        return $body instanceof \Traversable && (! $body instanceof Countable
+        return $body instanceof Traversable && (! $body instanceof Countable
             || $body->getSize() === null);
     }
 

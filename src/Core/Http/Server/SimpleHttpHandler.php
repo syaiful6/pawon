@@ -87,7 +87,9 @@ class SimpleHttpHandler extends BaseHttpHandler
         ));
 
         if (!isset($this->headers['Date'])) {
-            header(sprintf('%s: %s', 'Date', \DateTime::createFromFormat('U', time()));
+            $date = \DateTime::createFromFormat('U', time());
+            $date->setTimezone(new \DateTimeZone('UTC'));
+            header(sprintf('%s: %s', 'Date', $date->format('D, d M Y H:i:s').' GMT'));
         }
     }
 
