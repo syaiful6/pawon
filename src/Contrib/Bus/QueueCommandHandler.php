@@ -40,6 +40,9 @@ class QueueCommandHandler implements Middleware
         MethodNameInflector $methodNameInflector
     ) {
         $this->queue = $queue;
+        $this->commandNameExtractor = $commandNameExtractor;
+        $this->handlerLocator = $handlerLocator;
+        $this->methodNameInflector = $methodNameInflector;
     }
 
     /**

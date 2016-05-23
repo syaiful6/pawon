@@ -15,7 +15,7 @@
     "ext-mbstring": "*",
     "ext-openssl": "*",
     "syaiful6/itertools": "~0.1",
-    "syaiful6/headbanger": "~0.1",
+    "syaiful6/headbanger": "~0.2",
     "monolog/monolog": "~1.11",
     "illuminate/database": "^5.2",
     "illuminate/hashing": "^5.2",
