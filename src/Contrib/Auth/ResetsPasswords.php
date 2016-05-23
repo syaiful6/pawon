@@ -9,7 +9,6 @@ use Pawon\Auth\Access\UserPassesTestTrait;
 use Pawon\Contrib\Http\BaseActionMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Zend\Diactoros\Response\RedirectResponse;
 use function Pawon\trans;
 
 class ResetsPasswords extends BaseActionMiddleware
@@ -157,7 +156,9 @@ class ResetsPasswords extends BaseActionMiddleware
             $flash->success(trans($out));
         }
 
-        return new RedirectResponse($request->getUri()->getPath());
+        return $response
+            ->withHeader('location', $request->getUri()->getPath())
+            ->withStatus(302);
     }
 
      /**
@@ -170,7 +171,9 @@ class ResetsPasswords extends BaseActionMiddleware
             $flash->warning(trans($out));
         }
 
-        return new RedirectResponse($request->getUri()->getPath());
+        return $response
+            ->withHeader('location', $request->getUri()->getPath())
+            ->withStatus(302);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Pawon\Core;
 
 use Traversable;
 use Zend\Diactoros\Response;
+use Pawon\Http\Response as PawonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
@@ -31,26 +32,23 @@ class Application extends ExpressiveApp
      */
     public function boot(ServerRequestInterface $request, callable $startResponse)
     {
-       $response = new Response();
-       $response = $this($request, $response);
+        $response = new PawonResponse(new Response());
+        $response = $this($request, $response);
 
-       $status = sprintf(
+        $status = sprintf(
            '%d %s',
            $response->getStatusCode(),
            $response->getReasonPhrase()
-       );
-       $headers = $response->getHeaders();
-       $headers = zip(array_keys($headers), array_values($headers));
-       // start!
-       $startResponse($status, to_array($headers));
-       $body = $response->getBody();
-       if ($body->isSeekable()) {
-           $body->rewind();
-       }
-       if (! $body instanceof Traversable) {
-           $body = [$body->getContents()];
-       }
+        );
+        $headers = $response->getHeaders();
+        $headers = zip(array_keys($headers), array_values($headers));
+        // start!
+        $startResponse($status, to_array($headers));
 
-       return $body;
+        if (!$response instanceof PawonResponse) {
+            $response = new PawonResponse($response);
+        }
+
+        return $response;
     }
 }

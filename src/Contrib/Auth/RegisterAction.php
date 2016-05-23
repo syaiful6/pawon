@@ -10,7 +10,6 @@ use Zend\Diactoros\Stream;
 use Illuminate\Support\MessageBag;
 use Pawon\Auth\Access\UserPassesTestTrait;
 use Pawon\Contrib\Http\BaseActionMiddleware;
-use Zend\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -118,7 +117,9 @@ class RegisterAction extends BaseActionMiddleware
         if (method_exists($flash, 'info')) {
             $flash->info('Welcome, registration completed');
         }
-        return new RedirectResponse('/');
+        return $response
+            ->withHeader('location', '/')
+            ->withStatus(302);
     }
 
     /**

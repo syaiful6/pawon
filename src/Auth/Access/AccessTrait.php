@@ -3,7 +3,6 @@
 namespace Pawon\Auth\Access;
 
 use Pawon\Auth\Exceptions\PermissionDenied;
-use Zend\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -34,7 +33,10 @@ trait AccessTrait
         if (method_exists($flash, 'warning')) {
             $flash->warning($this->getPermissionDeniedMessage());
         }
-        return new RedirectResponse($this->getNoPermissionRedirectPath($request));
+
+        return $response
+            ->withHeader('location', $this->getNoPermissionRedirectPath($request))
+            ->withStatus(302);
     }
 
     /**

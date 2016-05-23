@@ -4,7 +4,6 @@ namespace Pawon\Contrib\Auth;
 
 use Pawon\Auth\Authenticator;
 use Pawon\Auth\Access\LoginRequiredTrait;
-use Zend\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use function Pawon\trans;
@@ -39,7 +38,9 @@ class LogoutAction
         if (is_callable([$flash, 'success'])) {
             $flash->success($this->getLogoutSuccessMessage());
         }
-        return new RedirectResponse('/');
+        return $response
+            ->withHeader('location', '/')
+            ->withStatus(302);
     }
 
     /**

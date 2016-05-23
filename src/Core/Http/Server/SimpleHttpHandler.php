@@ -63,11 +63,7 @@ class SimpleHttpHandler extends BaseHttpHandler
     {
         $this->cleanUpHeaders();
         $this->isHeaderSent = true; // mark the header
-        header(sprintf(
-            'HTTP/%s %s',
-            $this->httpVersion,
-            $this->status
-        ));
+        $this->sendPreamble();
         foreach ($this->headers->items() as list($name, $value)) {
             $name = $this->filterHeader($name);
             $first = true;
@@ -76,6 +72,22 @@ class SimpleHttpHandler extends BaseHttpHandler
                 header(sprintf('%s: %s', $name, $v), $first);
                 $first = false;
             }
+        }
+    }
+
+    /**
+     *
+     */
+    protected function sendPreamble()
+    {
+        header(sprintf(
+            'HTTP/%s %s',
+            $this->httpVersion,
+            $this->status
+        ));
+
+        if (!isset($this->headers['Date'])) {
+            header(sprintf('%s: %s', 'Date', \DateTime::createFromFormat('U', time()));
         }
     }
 

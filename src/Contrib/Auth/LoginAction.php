@@ -7,7 +7,6 @@ use Pawon\Cache\RateLimiter;
 use Zend\Diactoros\Stream;
 use Illuminate\Support\MessageBag;
 use Pawon\Contrib\Http\BaseActionMiddleware;
-use Zend\Diactoros\Response\RedirectResponse;
 use Pawon\Flash\FlashMessageInterface as FlashMessage;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -51,7 +50,9 @@ class LoginAction extends BaseActionMiddleware
     {
         $user = $request->getAttribute('user');
         if ($user->isAuthenticate()) {
-            return new RedirectResponse('/');
+            return $response
+                ->withHeader('location', '/')
+                ->withStatus(302);
         }
         $html = $this->renderer->render('app::auth/login', ['error' => new MessageBag]);
         $stream = new Stream('php://memory', 'wb+');
@@ -81,7 +82,7 @@ class LoginAction extends BaseActionMiddleware
     protected function formValid(Request $request, Response $response, callable $next)
     {
         if ($this->hasTooManyLoginAttempts($request)) {
-            return $this->sendResponseLockout($request);
+            return $this->sendResponseLockout($request, $response);
         }
 
         $posted = $request->getParsedBody();
@@ -94,14 +95,18 @@ class LoginAction extends BaseActionMiddleware
             $this->authenticator->login($request, $user);
             $this->flash->info("Welcome {$user->name}.");
             $this->clearLoginAttempts($request);
-            return new RedirectResponse('/');
+            return $response
+                ->withHeader('location', '/')
+                ->withStatus(302);
         }
 
         $this->flash->warning($this->getInvalidLoginMessage());
 
         $this->incrementLoginAttempts($request);
 
-        return new RedirectResponse($request->getUri()->getPath());
+        return $response
+            ->withHeader('location', $request->getUri()->getPath())
+            ->withStatus(302);
     }
 
     /**
@@ -132,11 +137,13 @@ class LoginAction extends BaseActionMiddleware
     /**
      *
      */
-    protected function sendResponseLockout($request)
+    protected function sendResponseLockout($request, $response)
     {
         $minutes = floor($this->secondsRemainingOnLockout($request) / 60);
         $this->flash($this->getLockoutErrorMessage($minutes));
-        return new RedirectResponse($request->getUri()->getPath());
+        return $response
+            ->withHeader('location', $request->getUri()->getPath())
+            ->withStatus(302);
     }
 
     /**
@@ -247,9 +254,9 @@ class LoginAction extends BaseActionMiddleware
      */
     protected function extractClientIpFromRequest($request)
     {
-        if ($request->hasHeader('REMOTE_ADDR', false)) {
-            $remote = $request->getHeader('REMOTE_ADDR');
-            return $remote[0];
+        $server = $this->getServerParams();
+        if (isset($server['REMOTE_ADDR']) {
+            return (string) $server['REMOTE_ADDR'];
         }
         $proxies = $request->getHeader('X_FORWARDED_FOR');
         if (empty($proxies)) {
