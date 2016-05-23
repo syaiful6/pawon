@@ -255,7 +255,7 @@ class LoginAction extends BaseActionMiddleware
     protected function extractClientIpFromRequest($request)
     {
         $server = $this->getServerParams();
-        if (isset($server['REMOTE_ADDR']) {
+        if (isset($server['REMOTE_ADDR'])) {
             return (string) $server['REMOTE_ADDR'];
         }
         $proxies = $request->getHeader('X_FORWARDED_FOR');
