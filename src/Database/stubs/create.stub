@@ -1,0 +1,32 @@
+<?php
+
+use Pawon\Database\BaseMigration;
+use Illuminate\Database\Schema\Blueprint;
+
+class DummyClass extends BaseMigration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        $schema = $this->getSchemaBuilder();
+        $schema->create('DummyTable', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        $schema = $this->getSchemaBuilder();
+        $schema->drop('DummyTable');
+    }
+}
