@@ -3,6 +3,7 @@
 namespace Pawon\Database\Console;
 
 use Pawon\Database\Migrator;
+use Pawon\Database\MigrationCreator;
 use Interop\Container\ContainerInterface;
 use Pawon\Core\Exceptions\ImproperlyConfigured;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
@@ -51,7 +52,7 @@ class ConsoleFactory
     public function createMakeMigration(ContainerInterface $container)
     {
         return new Commands\MakeMigration(
-            $container->get('App\Database\MigrationCreator')
+            $container->get(MigrationCreator::class)
         );
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Pawon\Flash;
 
-use Pawon\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class FlashContextProcessor
 {

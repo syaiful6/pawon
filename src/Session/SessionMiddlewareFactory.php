@@ -3,7 +3,7 @@
 namespace Pawon\Session;
 
 use Interop\Container\ContainerInterface;
-use Pawon\Foundation\Exceptions\ImproperlyConfigured;
+use Pawon\Core\Exceptions\ImproperlyConfigured;
 
 class SessionMiddlewareFactory
 {

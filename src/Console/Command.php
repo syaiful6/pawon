@@ -591,7 +591,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Get the Laravel application instance.
      *
-     * @return \Illuminate\Contracts\Foundation\Application
+     * @return \\Interop\Container\Exception\ContainerInterface
      */
     public function getContainer()
     {
@@ -601,7 +601,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Set the Laravel application instance.
      *
-     * @param  \Illuminate\Contracts\Container\Container  $laravel
+     * @param  \Interop\Container\Exception\ContainerInterface  $container
      * @return void
      */
     public function setContainer(ContainerInterface $container)

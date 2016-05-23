@@ -28,7 +28,7 @@ class Application extends SymfonyApplication
         $version = null
     ) {
         $this->container = $container;
-        $name = $name ?: 'Expressive';
+        $name = $name ?: 'Pawon';
         $version = $version ?: '1.0.0';
         parent::__construct($name, $version);
 
