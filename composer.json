@@ -1,71 +1,72 @@
 {
-    "name": "syaiful6/pawon",
-    "description": "pawon, from Javanese language. It's mean kitchen.",
-    "type": "project",
-    "homepage": "https://github.com/syaiful6/pawon",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Syaiful Bahri",
-            "email": "syaiful@pengunjungblog.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.6",
-        "ext-mbstring": "*",
-        "ext-openssl": "*",
-        "syaiful6/itertools": "~0.1",
-        "syaiful6/headbanger": "~0.1",
-        "monolog/monolog": "~1.11",
-        "illuminate/database": "^5.2",
-        "illuminate/hashing": "^5.2",
-        "illuminate/encryption": "^5.2",
-        "illuminate/support": "^5.2",
-        "symfony/translation": "2.8.*|3.0.*",
-        "symfony/console": "^3.0",
-        "symfony/finder": "2.8.*|3.0.*",
-        "swiftmailer/swiftmailer": "~5.1",
-        "paragonie/random_compat": "~1.4",
-        "jeremeamia/superclosure": "~2.2",
-        "league/tactician": "~1.0.2",
-        "vlucas/phpdotenv": "~2.2",
-        "zendframework/zend-expressive": "^1.0",
-        "zendframework/zend-expressive-helpers": "^2.0",
-        "zendframework/zend-stdlib": "^2.7 || ^3.0",
-        "zendframework/zend-expressive-fastroute": "^1.0",
-        "zendframework/zend-servicemanager": "^2.7.3 || ^3.0",
-        "zendframework/zend-eventmanager": "^2.6 || ^3.0",
-        "zendframework/zend-expressive-twigrenderer": "^1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^4.8",
-        "squizlabs/php_codesniffer": "^2.3",
-        "filp/whoops": "^1.1 || ^2.0",
-        "mockery/mockery": "~0.9.4"
-    },
-    "autoload": {
-        "psr-4": {
-            "Pawon\\": "src/"
-        },
-        "files": [
-          "src/shortcut.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Pawon\\Tests\\": "test/"
-        }
-    },
-    "config": {
-        "preferred-install": "dist"
-    },
-    "scripts": {
-        "check": [
-            "@cs",
-            "@test"
-        ],
-        "cs": "phpcs",
-        "cs-fix": "phpcbf",
-        "test": "phpunit"
+  "name": "syaiful6/pawon",
+  "description": "pawon, from Javanese language. It's mean kitchen.",
+  "type": "project",
+  "homepage": "https://github.com/syaiful6/pawon",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Syaiful Bahri",
+      "email": "syaiful@pengunjungblog.com"
     }
+  ],
+  "require": {
+    "php": ">=5.6",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "syaiful6/itertools": "~0.1",
+    "syaiful6/headbanger": "~0.1",
+    "monolog/monolog": "~1.11",
+    "illuminate/database": "^5.2",
+    "illuminate/hashing": "^5.2",
+    "illuminate/encryption": "^5.2",
+    "illuminate/support": "^5.2",
+    "symfony/translation": "2.8.*|3.0.*",
+    "symfony/console": "^3.0",
+    "symfony/finder": "2.8.*|3.0.*",
+    "swiftmailer/swiftmailer": "~5.1",
+    "paragonie/random_compat": "~1.4",
+    "jeremeamia/superclosure": "~2.2",
+    "league/tactician": "~1.0.2",
+    "vlucas/phpdotenv": "~2.2",
+    "zendframework/zend-expressive": "^1.0",
+    "zendframework/zend-expressive-helpers": "^2.0",
+    "zendframework/zend-stdlib": "^2.7 || ^3.0",
+    "zendframework/zend-expressive-fastroute": "^1.0",
+    "zendframework/zend-servicemanager": "^2.7.3 || ^3.0",
+    "zendframework/zend-eventmanager": "^2.6 || ^3.0",
+    "zendframework/zend-expressive-twigrenderer": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.8",
+    "squizlabs/php_codesniffer": "^2.3",
+    "filp/whoops": "^1.1 || ^2.0",
+    "mockery/mockery": "~0.9.4"
+  },
+  "autoload": {
+    "psr-4": {
+        "Pawon\\": "src/"
+    },
+    "files": [
+      "src/shortcut.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+        "Pawon\\Tests\\": "test/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "minimum-stability": "dev",
+  "scripts": {
+    "check": [
+        "@cs",
+        "@test"
+    ],
+    "cs": "phpcs",
+    "cs-fix": "phpcbf",
+    "test": "phpunit"
+  }
 }
