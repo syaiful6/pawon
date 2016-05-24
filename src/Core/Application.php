@@ -52,5 +52,10 @@ class Application extends ExpressiveApp
         if ($response->isStreaming()) {
             return $response;
         }
+        $body = $response->getBody();
+        if ($body->isSeekable()) {
+            $body->rewind();
+        }
+        return [$body->getContents()];
     }
 }
