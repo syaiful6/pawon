@@ -28,6 +28,10 @@ class ErrorHandler
      */
     public function __invoke($error, Request $request, Response $response, callable $next = null)
     {
+        // that's expressive set error as 405
+        if (! is_object($error)) {
+            return $next($request, $response, $error);
+        }
         return call_user_func($this->handler, $error, $request, $response, $next);
     }
 
