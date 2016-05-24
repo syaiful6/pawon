@@ -3,6 +3,7 @@
 namespace Pawon\Cookie;
 
 use Headbanger\HashMap;
+use function Itertools\zip_longest;
 
 class Cookie extends HashMap
 {
@@ -35,8 +36,16 @@ REGEX;
     {
         parent::__construct();
         if ($load !== null) {
-            $this->load($input);
+            $this->load($load);
         }
+    }
+
+    /**
+     *
+     */
+    public function __toString()
+    {
+        return $this->getOutput();
     }
 
     /**
@@ -102,25 +111,25 @@ REGEX;
         $reserverd = explode(' ', 'expires path comment domain max-age secure httponly version');
         $secure = explode(' ', 'secure httponly');
 
-        if (preg_match('~'.self::COOKIE_PATTERN.'~g', $str, $matches)) {
-            foreach ($matches as $match) {
-                list($key, $val) = [$match['key'], $match['val']];
+        if (preg_match_all('/'.self::COOKIE_PATTERN.'/m', $str, $matches)) {
+            foreach (zip_longest($matches['key'], $matches['val']) as list($key, $val)) {
+
                 if ($key[0] === '$') {
                     if ($morshel) {
                         $morshel[substr($key, 1)] = $val;
                     }
                 } elseif (in_array(strtolower($key), $reserverd)) {
                     if ($morshel) {
-                        if (! $value) {
+                        if (! $val) {
                             if (in_array(strtolower($key), $flags)) {
                                 $morshel[$key] = true;
                             }
                         } else {
-                            $morshel[$key] = urldecode($value);
+                            $morshel[$key] = urldecode($val);
                         }
                     }
-                } elseif ($value !== '' || $value !== null) {
-                    list($rval, $cval) = $this->valueDecode($value);
+                } elseif ($val !== '' || $val !== null) {
+                    list($rval, $cval) = $this->valueDecode($val);
                     $this->internalSet($key, $rval, $cval);
                     $morshel = $this[$key];
                 }

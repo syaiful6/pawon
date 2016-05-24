@@ -49,6 +49,8 @@ class Application extends ExpressiveApp
             $response = new PawonResponse($response);
         }
 
-        return $response;
+        if ($response->isStreaming()) {
+            return $response;
+        }
     }
 }

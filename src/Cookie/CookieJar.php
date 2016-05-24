@@ -47,20 +47,11 @@ class CookieJar implements QueueingCookieFactory
     public function make($name, $value, $expires = null, $maxAge = null, $path = null, $domain = null, $secure = false, $httpOnly = false) {
         $oldCookie = $this->cookies;
         $this->cookies = new Cookie();
-        $this->queue(
-            $name,
-            $value,
-            $expires,
-            $maxAge,
-            $path,
-            $domain,
-            $secure,
-            $httpOnly
-        );
+        $this->queue($name, $value, $expires, $maxAge, $path, $domain, $secure, $httpOnly);
 
         $output = $this->cookies->getOutput(null, '', '');
         $this->cookies = $oldCookie;
-        return $output;
+        return ltrim($output);
     }
 
     /**
@@ -74,23 +65,16 @@ class CookieJar implements QueueingCookieFactory
     /**
      *
      */
-    public function forever($name, $value, $path = null, $domain = null, $secure = false, $httpOnly = false) {
+    public function forever($name, $value, $path = null, $domain = null, $secure = false, $httpOnly = false)
+    {
         return $this->make($name, $value, 2628000, null, $path, $domain, $secure, $httpOnly);
     }
 
     /**
      *
      */
-    public function queue(
-        $name,
-        $value,
-        $expires = null,
-        $maxAge = null,
-        $path = null,
-        $domain = null,
-        $secure = false,
-        $httpOnly = false
-    ) {
+    public function queue($name, $value, $expires = null, $maxAge = null, $path = null, $domain = null, $secure = false, $httpOnly = false)
+    {
         list($path, $domain, $secure, $httpOnly) = $this->getCookieTails($path, $domain, $secure, $httpOnly);
         $this->cookies[$name] = $value;
 
