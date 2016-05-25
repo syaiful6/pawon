@@ -32,7 +32,7 @@ class Application extends ExpressiveApp
      */
     public function boot(ServerRequestInterface $request, callable $startResponse)
     {
-        $response = new PawonResponse(new Response());
+        $response = new new Response();
         $response = $this($request, $response);
 
         $status = sprintf(
@@ -44,18 +44,14 @@ class Application extends ExpressiveApp
         $headers = zip(array_keys($headers), array_values($headers));
         // start!
         $startResponse($status, to_array($headers));
-
-        if (!$response instanceof PawonResponse) {
-            $response = new PawonResponse($response);
-        }
-
-        if ($response->isStreaming()) {
-            return $response;
-        }
         $body = $response->getBody();
         if ($body->isSeekable()) {
             $body->rewind();
         }
-        return [$body->getContents()];
+        if (!$body instanceof \Traversable) {
+            return [$body->getContents()];
+        }
+
+        return $body;
     }
 }
