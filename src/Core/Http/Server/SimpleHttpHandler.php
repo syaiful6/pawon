@@ -2,11 +2,14 @@
 
 namespace Pawon\Core\Http\Server;
 
-use Zend\Diactoros\Stream;
-use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
-class SimpleHttpHandler extends BaseHttpHandler
+class SimpleHttpHandler extends BaseHttpHandler implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected $stdout;
 
     protected $stderr;
@@ -17,13 +20,9 @@ class SimpleHttpHandler extends BaseHttpHandler
     /**
      *
      */
-    public function __construct(
-        StreamInterface $stdout = null,
-        StreamInterface $stderr = null
-    ) {
-
-        $this->stdout = $stdout ?: new Stream('php://output', 'wb');
-        $this->stderr = $this->stderr ?: new Stream('php://stderr', 'wb');
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
     }
 
     /**
@@ -94,18 +93,12 @@ class SimpleHttpHandler extends BaseHttpHandler
     }
 
     /**
-     * Loops through the output buffer, flushing each, before emitting
-     * the response.
+     * Loops through the output buffer
      *
      * @param int|null $maxBufferLevel Flush up to this buffer level.
      */
     protected function flush()
     {
-        if (method_exists($this->stdout, 'flush')) {
-            $this->stdout->flush();
-
-            return;
-        }
         $maxBufferLevel = $this->obLevel;
 
         while (ob_get_level() > $maxBufferLevel) {
@@ -119,31 +112,7 @@ class SimpleHttpHandler extends BaseHttpHandler
      */
     protected function doWrite($data)
     {
-        $this->stdout->write($data);
-    }
-
-    /**
-     *
-     */
-    protected function getStdin()
-    {
-        return $this->request->getBody();
-    }
-
-    /**
-     *
-     */
-    protected function getStdout()
-    {
-        return $this->stdout;
-    }
-
-    /**
-     *
-     */
-    protected function getStdErr()
-    {
-        return $this->stderr;
+        echo $data;
     }
 
     /**
@@ -166,7 +135,8 @@ class SimpleHttpHandler extends BaseHttpHandler
      */
     protected function logException($e)
     {
-        $stderr = $this->getStdErr();
-        $stderr->write($e->getTraceAsString());
+        if ($this->logger) {
+            $this->logger->critical($e);
+        }
     }
 }

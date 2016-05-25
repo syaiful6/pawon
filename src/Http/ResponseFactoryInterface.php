@@ -10,7 +10,15 @@ interface ResponseFactoryInterface
      * @param string|StreamInterface $body
      * @param string $status
      * @param string $headers
-     * @return Psr\Http\Message\StreamInterface
+     * @return
      */
     public function make($body = '', $status = 200, array $headers = []);
+
+    /**
+     * Make a stream to be used as body on request. The stream should readable
+     *
+     * @param mixed $data
+     * @return Psr\Http\Message\StreamInterface
+     */
+    public function makeStream($data = null);
 }

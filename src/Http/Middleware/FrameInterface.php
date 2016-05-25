@@ -7,6 +7,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 interface FrameInterface
 {
 	/**
+     * Call next middleware on the stack. And return response
+     *
 	 * @param Psr\Http\Message\ServerRequestInterface
      * @return Psr\Http\Message\ResponseInterface
 	 */

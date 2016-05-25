@@ -6,7 +6,6 @@ use Exception;
 use Throwable;
 use Countable;
 use LogicException;
-use Zend\Diactoros\ServerRequestFactory;
 use function Pawon\invoke;
 
 abstract class BaseHttpHandler
@@ -51,10 +50,8 @@ abstract class BaseHttpHandler
     /**
      *
      */
-    protected function setupRequest(...$args)
+    protected function setupRequest()
     {
-        $request = ServerRequestFactory::fromGlobals(...$args);
-        $this->request = $request->withAttribute('server.file_wrapper', FileWrapper::class);
     }
 
     /**
@@ -180,12 +177,6 @@ abstract class BaseHttpHandler
      */
     protected function logException($e)
     {
-        try {
-            $stderr = $this->getStdErr();
-            $stderr->write($e->getTraceAsString());
-        } finally {
-            $e = null;
-        }
     }
 
     /**
@@ -260,18 +251,4 @@ abstract class BaseHttpHandler
      */
     abstract protected function flush();
 
-    /**
-     *
-     */
-    abstract protected function getStdin();
-
-    /**
-     *
-     */
-    abstract protected function getStdout();
-
-    /**
-     *
-     */
-    abstract protected function getStdErr();
 }

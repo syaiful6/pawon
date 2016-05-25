@@ -2,38 +2,69 @@
 
 namespace Pawon\Core;
 
+use SplQueue;
 use Traversable;
-use Zend\Diactoros\Response;
-use Pawon\Http\Response as PawonResponse;
-use Psr\Http\Message\ServerRequestInterface;
 use Interop\Container\ContainerInterface;
+use Pawon\Http\ResponseFactoryInterface;
+use Pawon\Http\Middleware\Frame;
+use Pawon\Http\Middleware\CallableMiddleware;
+use Pawon\Http\Middleware\MiddlewareInterface;
+use Pawon\Http\Middleware\TerminableMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Application as ExpressiveApp;
 use function Itertools\zip;
 use function Itertools\to_array;
 
-class Application extends ExpressiveApp
+class Application
 {
+    /**
+     * @var Pawon\Http\ResponseFactoryInterface
+     */
+    protected $factory;
+
+    /**
+     * @var
+     */
+    protected $finalHandler;
+
+    /**
+     *
+     */
+    protected $queue;
+
+    /**
+     *
+     */
+    protected $terminable;
 
     /**
      *
      */
     public function __construct(
-        RouterInterface $router,
-        ContainerInterface $container,
+        ResponseFactoryInterface $factory,
         callable $finalHandler = null
     ) {
 
-        parent::__construct($router, $container, $finalHandler);
+        $this->queue = new SplQueue();
+        $this->factory = $factory;
+        $this->finalHandler = $finalHandler;
     }
 
     /**
      *
      */
-    public function boot(ServerRequestInterface $request, callable $startResponse)
+    public function pipe($middleware)
     {
-        $response = new new Response();
-        $response = $this($request, $response);
+        $this->queue->dequeue($this->normalizeMiddleware($middleware));
+    }
+
+    /**
+     *
+     */
+    public function __invoke(ServerRequestInterface $request, callable $startResponse)
+    {
+        $frame = new Frame($this->queue, $this->factory, $this->finalHandler);
+        $response = $frame->next($request);
 
         $status = sprintf(
            '%d %s',
@@ -44,14 +75,28 @@ class Application extends ExpressiveApp
         $headers = zip(array_keys($headers), array_values($headers));
         // start!
         $startResponse($status, to_array($headers));
-        $body = $response->getBody();
-        if ($body->isSeekable()) {
-            $body->rewind();
-        }
-        if (!$body instanceof \Traversable) {
-            return [$body->getContents()];
+
+        return $response;
+    }
+
+    /**
+     *
+     */
+    protected function normalizeMiddleware($middleware)
+    {
+        if ($middleware instanceof MiddlewareInterface) {
+            if ($middleware instanceof TerminableMiddleware) {
+                $this->terminable[] = $middleware;
+            }
+            return $middleware;
+        } elseif (is_callable($middleware)) {
+            return new CallableMiddleware($middleware);
         }
 
-        return $body;
+        throw new \InvalidArgumentException(sprintf(
+            'Invalid middleware detected. %s must be callable or instanceof %s',
+            is_object($middleware) ? get_class($middleware) : gettype($middleware),
+            MiddlewareInterface::class
+        ));
     }
 }
