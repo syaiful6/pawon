@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class ServerUrlMiddleware implements MiddlewareInterface
 {
-	/**
+    /**
      * @var Zend\Expressive\Helper\ServerUrlHelper
      */
     private $helper;
@@ -23,11 +23,11 @@ class ServerUrlMiddleware implements MiddlewareInterface
     }
 
     /**
-	 *
-	 */
-	public function handle(Request $request, FrameInterface $frame)
-	{
-		$this->helper->setUri($request->getUri());
+     *
+     */
+    public function handle(Request $request, FrameInterface $frame)
+    {
+        $this->helper->setUri($request->getUri());
         return $frame->next($request);
-	}
+    }
 }

@@ -9,15 +9,15 @@ use Interop\Container\ContainerInterface;
 
 class ContainerRoutedMiddlewareResolver implements RoutedMiddlewareResolver
 {
-	protected $container;
+    protected $container;
 
-	/**
-	 *
-	 */
-	public function __construct(ContainerInterface $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     *
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
 
     /**
      *

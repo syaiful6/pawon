@@ -29,7 +29,8 @@ class LogoutAction implements MiddlewareInterface
     /**
      *
      */
-    protected function handlePermissionPassed(Request $request, Frame $frame) {
+    protected function handlePermissionPassed(Request $request, Frame $frame)
+    {
         $request = $this->authenticator->logout($request);
         $flash = $request->getAttribute('_messages');
         if (is_callable([$flash, 'success'])) {

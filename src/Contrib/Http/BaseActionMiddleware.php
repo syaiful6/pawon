@@ -11,9 +11,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Illuminate\Contracts\Validation\Factory as FactoryContract;
 
-abstract class BaseActionMiddleware implements MiddlewareInterface,
-                                               ValidatorFactoryAwareInterface,
-                                               CommandBusAwareInterface
+abstract class BaseActionMiddleware implements
+    MiddlewareInterface,
+    ValidatorFactoryAwareInterface,
+    CommandBusAwareInterface
 {
     use DispatchMethod, ValidateRequest;
 

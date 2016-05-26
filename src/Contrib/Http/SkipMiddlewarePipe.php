@@ -40,7 +40,8 @@ class SkipMiddlewarePipe extends MiddlewarePipe
     /**
      *
      */
-    public function handle(Request $request, FrameInterface $frame) {
+    public function handle(Request $request, FrameInterface $frame)
+    {
         $path = $request->getUri()->getPath() ?: '/';
         $route = $this->skipPath;
         $normalizedRoute = (strlen($route) > 1) ? rtrim($route, '/') : $route;

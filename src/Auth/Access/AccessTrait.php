@@ -14,7 +14,8 @@ trait AccessTrait
      * them returned by getNoPermissionRedirectPath
      *
      */
-    protected function handleNoPermission(Request $request, FrameInterface $frame) {
+    protected function handleNoPermission(Request $request, FrameInterface $frame)
+    {
         if ($this->shouldPipeToError()) {
             throw new PermissionDenied($this->getPermissionDeniedMessage());
         }

@@ -4,8 +4,8 @@ namespace Pawon\Http\Routing;
 
 interface RoutedMiddlewareResolver
 {
-	/**
-	 *
-	 */
-	public function resolve($middleware);
+    /**
+     *
+     */
+    public function resolve($middleware);
 }
