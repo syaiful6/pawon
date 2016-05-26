@@ -13,8 +13,9 @@ class StreamingResponse extends Response
     public function __construct(
         $body,
         $status = 200,
-        array $headers = [])
-    {
+        array $headers = []
+    ) {
+
         parent::__construct(
             $this->createBody($body),
             $status,

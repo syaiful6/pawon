@@ -5,12 +5,13 @@ namespace Pawon\Middleware;
 use Headbanger\Set;
 use OutOfBoundsException;
 use Zend\Diactoros\Uri;
-use Pawon\Cookie\CookieFactory;
 use Illuminate\Support\Str;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Pawon\Cookie\CookieFactory;
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
-class Csrf
+class Csrf implements MiddlewareInterface
 {
     const CSRF_KEY_LENGTH = 32;
 
@@ -52,18 +53,14 @@ class Csrf
      */
     protected function rejectRequest($reason)
     {
-        return new TokenMismatchException($reason);
+        throw new TokenMismatchException($reason);
     }
 
     /**
      *
      */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) {
-
+    public function handle(Request $request, FrameInterface $frame)
+    {
         // try to get from cookie
         $cookies = $request->getCookieParams();
         if (isset($cookies[static::CSRF_COOKIE_NAME])) {
@@ -77,13 +74,13 @@ class Csrf
                 $this->getNewCsrfToken()
             );
         }
-
+        // only check if the request method is not "safe"
         if (!in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE'])) {
             if ($request->getAttribute('DONT_ENFORCE_CSRF_CHECK', false)) {
                 /**
                  * Mechanism to turn off CSRF checks for test suite.
                  */
-                return $next($request, $response);
+                return $frame->next($request);
             }
 
             if (($uri = $request->getUri()->getScheme()) === 'https') {
@@ -92,9 +89,9 @@ class Csrf
                     ? $server['HTTP_REFERER']
                     : false;
                 if (!$referer) {
-                    return $next($request, $response, $this->rejectRequest(
+                    $this->rejectRequest(
                         'Referer checking failed - no Referer.'
-                    ));
+                    );
                 }
                 $goodReferrer = sprintf('https://$s:%s/', $uri->getHost(), $uri->getPort());
                 if (!$this->sameOrigin($referer, $goodReferrer)) {
@@ -103,11 +100,11 @@ class Csrf
                         $referer,
                         $goodReferrer
                     );
-                    return $next($request, $response, $this->rejectRequest($reason));
+                    return $this->rejectRequest($reason);
                 }
             }
             if (!$csrftoken) {
-                return $next($request, $response, $this->rejectRequest('CSRF cookie not set.'));
+                return $this->rejectRequest('CSRF cookie not set.');
             }
 
             $requestcsrftoken = '';
@@ -121,15 +118,17 @@ class Csrf
                 $requestcsrftoken = $request->getHeader('X-CSRFTOKEN');
             }
             if (! $this->compareCsrfToken($requestcsrftoken, $csrftoken)) {
-                return $next($request, $response, $this->rejectRequest(
+                return $this->rejectRequest(
                     'CSRF token missing or incorrect.'
-                ));
+                );
             }
         }
+
         $request = $request
             ->withAttribute('CSRF_TOKEN_GET', [$this, 'getToken'])
             ->withAttribute('CSRF_TOKEN_ROTATE', [$this, 'rotateToken']);
-        $response = $next($request, $response);
+        // we need to save the token
+        $response = $frame->next($request);
         // not used, maybe there are no form on the template
         if (! $this->csrfTokenUsed) {
             return $response;

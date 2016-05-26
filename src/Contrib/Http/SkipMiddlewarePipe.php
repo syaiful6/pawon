@@ -2,12 +2,12 @@
 
 namespace Pawon\Contrib\Http;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\MarshalMiddlewareTrait;
-use Zend\Stratigility\MiddlewarePipe;
-use Zend\Stratigility\FinalHandler;
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
+use Pawon\Http\Middleware\MiddlewarePipe;
+use Pawon\Http\Middleware\CallableMiddleware;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * This middleware used to disable our common web middleware stack when the request
@@ -17,8 +17,6 @@ use Zend\Stratigility\FinalHandler;
  */
 class SkipMiddlewarePipe extends MiddlewarePipe
 {
-    use MarshalMiddlewareTrait;
-
     /**
      * @var \Interop\Container\ContainerInterface
      */
@@ -42,49 +40,32 @@ class SkipMiddlewarePipe extends MiddlewarePipe
     /**
      *
      */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function handle(Request $request, FrameInterface $frame) {
         $path = $request->getUri()->getPath() ?: '/';
         $route = $this->skipPath;
         $normalizedRoute = (strlen($route) > 1) ? rtrim($route, '/') : $route;
 
-        $next = $next ?: new FinalHandler([], $response);
         // not match with the skip path, so we can pipe this stack
         if (substr(strtolower($path), 0, strlen($normalizedRoute)) !== strtolower($normalizedRoute)) {
-            return parent::__invoke($request, $response, $next);
+            return parent::handle($request, $frame);
         }
         // if match is not at a border ('/', '.', or end), we can process em
         $border = $this->getBorder($path, $normalizedRoute);
         if ($border && '/' !== $border && '.' !== $border) {
-            return parent::__invoke($request, $response, $next);
+            return parent::handle($request, $frame);
         }
 
         // this current path match again skip path so process the next
-        return $next($request, $response);
+        return $frame->next($request);
     }
 
     /**
      *
      */
-    public function pipe($path, $middleware = null)
+    public function pipe($middleware)
     {
-        if (null === $middleware) {
-            $middleware = $this->prepareMiddleware($path, $this->container);
-            $path = '/';
-        }
-
-        if (! is_callable($middleware)
-            && (is_string($middleware) || is_array($middleware))
-        ) {
-            $middleware = $this->prepareMiddleware($middleware, $this->container);
-        }
-
-        parent::pipe($path, $middleware);
-
-        return $this;
+        $middleware = $this->normalize($middleware);
+        parent::pipe($middleware);
     }
 
      /**
@@ -101,5 +82,61 @@ class SkipMiddlewarePipe extends MiddlewarePipe
         }
         $routeLength = strlen($route);
         return (strlen($path) > $routeLength) ? $path[$routeLength] : '';
+    }
+
+    /**
+     *
+     */
+    private function normalize($middleware)
+    {
+        if (is_callable($middleware) || $midlleware instanceof MiddlewareInterface) {
+            return $middleware;
+        }
+
+        if (is_array($middleware)) {
+            return $this->resolveMiddlewarePipe($middleware);
+        }
+
+        if (is_string($middleware) && $this->container->has($middleware)) {
+            return $this->resolveLazyMiddlewareService($middleware);
+        }
+
+        throw new \RuntimeException('Invalid middleware detected');
+    }
+
+    /**
+     *
+     */
+    private function resolveMiddlewarePipe($middlewares)
+    {
+        $middlewarePipe = new MiddlewarePipe();
+
+        foreach ($middlewares as $middleware) {
+            $middlewarePipe->pipe(
+                $this->resolve($middleware)
+            );
+        }
+
+        return $middlewarePipe;
+    }
+
+    /**
+     * @param string $middleware
+     * @param ContainerInterface $container
+     * @return callable
+     */
+    private function resolveLazyMiddlewareService($middleware)
+    {
+        return new CallableMiddleware(function ($request, $frame) use ($middleware) {
+            $md = $this->container->get($middleware);
+            if ($md instance MiddlewareInterface) {
+                throw new \InvalidMiddlewareException(sprintf(
+                    'Lazy-loaded middleware "%s" is not instance of %s',
+                    $middleware,
+                    MiddlewareInterface::class
+                ));
+            }
+            return $md->handle($request, $frame);
+        });
     }
 }

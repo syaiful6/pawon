@@ -2,12 +2,13 @@
 
 namespace Pawon\Database;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Illuminate\Database\Eloquent\Model;
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
 use Illuminate\Database\ConnectionResolverInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
-class CapsuleMiddleware
+class CapsuleMiddleware implements MiddlewareInterface
 {
 
     protected $resolver;
@@ -23,13 +24,10 @@ class CapsuleMiddleware
     /**
      *
      */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) {
+    public function handle(Request $request, FrameInterface $frame)
+    {
         Model::clearBootedModels();
         Model::setConnectionResolver($this->resolver);
-        return $next($request, $response);
+        return $frame->next($request);
     }
 }

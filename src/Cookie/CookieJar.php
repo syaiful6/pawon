@@ -44,7 +44,8 @@ class CookieJar implements QueueingCookieFactory
     /**
      *
      */
-    public function make($name, $value, $expires = null, $maxAge = null, $path = null, $domain = null, $secure = false, $httpOnly = false) {
+    public function make($name, $value, $expires = null, $maxAge = null, $path = null, $domain = null, $secure = false, $httpOnly = false)
+    {
         $oldCookie = $this->cookies;
         $this->cookies = new Cookie();
         $this->queue($name, $value, $expires, $maxAge, $path, $domain, $secure, $httpOnly);

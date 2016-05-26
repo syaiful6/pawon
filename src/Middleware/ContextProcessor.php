@@ -2,12 +2,13 @@
 
 namespace Pawon\Middleware;
 
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 use Zend\Expressive\Template\TemplateRendererInterface as Renderer;
 use function Itertools\iter;
 
-class ContextProcessor
+class ContextProcessor implements MiddlewareInterface
 {
     /**
      * an array of callable
@@ -36,7 +37,7 @@ class ContextProcessor
     /**
      *
      */
-    public function __invoke(Request $request, Response $response, callable $next = null)
+    public function handle(Request $request, FrameInterface $frame)
     {
         $template = $this->renderer;
         // we will spin through all processor an add them to template
@@ -52,7 +53,7 @@ class ContextProcessor
                 $template->addDefaultParam(Renderer::TEMPLATE_ALL, $k, $v);
             }
         }
-        return $next($request, $response);
+        return $frame->next($request);
     }
 
     /**

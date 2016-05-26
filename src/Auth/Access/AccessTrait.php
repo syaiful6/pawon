@@ -2,8 +2,7 @@
 
 namespace Pawon\Auth\Access;
 
-use Pawon\Auth\Exceptions\PermissionDenied;
-use Psr\Http\Message\ResponseInterface as Response;
+use Pawon\Http\Middleware\FrameInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 trait AccessTrait
@@ -14,19 +13,10 @@ trait AccessTrait
      * handler do whatever they want. If it return falsely then we will redirect
      * them returned by getNoPermissionRedirectPath
      *
-     * @param Psr\Http\Message\ServerRequestInterface $request
-     * @param Psr\Http\Message\ResponseInterface $response
-     * @param callable $next
      */
-    protected function handleNoPermission(
-        Request $request,
-        Response $response,
-        callable $next
-    ) {
+    protected function handleNoPermission(Request $request, FrameInterface $frame) {
         if ($this->shouldPipeToError()) {
-            $error = new PermissionDenied($this->getPermissionDeniedMessage());
-
-            return $next($request, $response, $error);
+            throw new PermissionDenied($this->getPermissionDeniedMessage());
         }
 
         $flash = $request->getAttribute('_messages');
@@ -34,9 +24,9 @@ trait AccessTrait
             $flash->warning($this->getPermissionDeniedMessage());
         }
 
-        return $response
-            ->withHeader('location', $this->getNoPermissionRedirectPath($request))
-            ->withStatus(302);
+        return $frame->getResponseFactory->make('', 302, [
+            'location', $this->getNoPermissionRedirectPath($request)
+        ]);
     }
 
     /**

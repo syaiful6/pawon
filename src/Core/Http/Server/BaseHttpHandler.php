@@ -250,5 +250,4 @@ abstract class BaseHttpHandler
      *
      */
     abstract protected function flush();
-
 }

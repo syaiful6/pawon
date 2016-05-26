@@ -4,16 +4,17 @@ namespace Pawon\Contrib\Auth;
 
 use Pawon\Auth\Authenticator;
 use Pawon\Auth\Access\LoginRequiredTrait;
-use Psr\Http\Message\ResponseInterface as Response;
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use function Pawon\trans;
 
-class LogoutAction
+class LogoutAction implements MiddlewareInterface
 {
     use LoginRequiredTrait;
 
     /**
-     *
+     * @var Pawon\Auth\Authenticator
      */
     protected $authenticator;
 
@@ -28,19 +29,16 @@ class LogoutAction
     /**
      *
      */
-    protected function handlePermissionPassed(
-        Request $request,
-        Response $response,
-        callable $next
-    ) {
+    protected function handlePermissionPassed(Request $request, Frame $frame) {
         $request = $this->authenticator->logout($request);
         $flash = $request->getAttribute('_messages');
         if (is_callable([$flash, 'success'])) {
             $flash->success($this->getLogoutSuccessMessage());
         }
-        return $response
-            ->withHeader('location', '/')
-            ->withStatus(302);
+
+        return $frame->getResponseFactory()->make('', 302, [
+            'location' => '/'
+        ]);
     }
 
     /**

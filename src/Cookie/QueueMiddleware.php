@@ -2,10 +2,11 @@
 
 namespace Pawon\Cookie;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
-class QueueMiddleware
+class QueueMiddleware implements MiddlewareInterface
 {
     protected $cookieJar;
 
@@ -20,12 +21,9 @@ class QueueMiddleware
     /**
      *
      */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) {
-        $response = $next($request, $response);
+    public function handle(Request $request, FrameInterface $frame)
+    {
+        $response = $frame->next($request);
 
         if ($response->hasHeader('Set-Cookie')) {
             $cookies = $response->getHeader('Set-Cookie');

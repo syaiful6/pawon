@@ -32,7 +32,19 @@ class GenericMiddlewareFactory
      */
     protected function createErrorHandler($container)
     {
-        return new ErrorHandler($container->get(TemplateRendererInterface::class));
+        $config = $container->has('config') ? $container->get('config') : [];
+        $error = new ErrorHandler(
+            $container->get(TemplateRendererInterface::class),
+            $debug = $config['debug']
+        );
+        if ($debug) {
+            $error->setDebuggingHandler(
+                $container->get('Pawon\Core\Whoops'),
+                $container->get('Pawon\Core\WhoopsPageHandler')
+            );
+        }
+
+        return $error;
     }
 
     /**

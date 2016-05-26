@@ -2,10 +2,11 @@
 
 namespace Pawon\Flash;
 
-use Psr\Http\Message\ResponseInterface as Response;
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class FlashMessageMiddleware
+class FlashMessageMiddleware implements MiddlewareInterface
 {
 
     protected $flash;
@@ -24,11 +25,11 @@ class FlashMessageMiddleware
     /**
      *
      */
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function handle(Request $request, FrameInterface $frame)
     {
         $request = $request->withAttribute('_messages', $this->flash);
 
-        $response = $next($request, $response);
+        $response = $frame->next($request);
 
         $unstored = $this->flash->update($response);
         if ($unstored && $this->debug) {

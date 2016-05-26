@@ -6,17 +6,16 @@ use Pawon\Auth\User;
 use Pawon\Auth\ModelBackend;
 use Pawon\Auth\Authenticator;
 use Pawon\DateTime\DateTime;
-use Zend\Diactoros\Stream;
 use Illuminate\Support\MessageBag;
 use Pawon\Auth\Access\UserPassesTestTrait;
 use Pawon\Contrib\Http\BaseActionMiddleware;
-use Psr\Http\Message\ResponseInterface as Response;
+use Pawon\Http\Middleware\FrameInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class RegisterAction extends BaseActionMiddleware
 {
     use UserPassesTestTrait {
-        __invoke as userPassedTest;
+        handle as userPassedTest;
     }
 
     /**
@@ -46,70 +45,65 @@ class RegisterAction extends BaseActionMiddleware
     /**
      *
      */
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function handle(Request $request, FrameInterface $frame)
     {
-        return $this->userPassedTest($request, $response, $next);
+        return $this->userPassedTest($request, $frame);
     }
 
     /**
      *
      */
-    protected function handlePermissionPassed(
-        Request $request,
-        Response $response,
-        callable $next
-    ) {
-        return parent::__invoke($request, $response, $next);
+    protected function handlePermissionPassed(Request $request, FrameInterface $frame)
+    {
+        return parent::handle($request, $frame);
     }
 
     /**
      *
      */
-    public function get(Request $request, Response $response, callable $next)
+    public function get(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/register', [
             'error' => new MessageBag()
         ]);
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($html);
-        return $response
-            ->withBody($stream)
-            ->withHeader('Content-Type', 'text/html');
+
+        return $frame->getResponseFactory()->make($html, 200, [
+            'Content-Type' => 'text/html'
+        ]);
     }
 
     /**
      *
      */
-    public function post(Request $request, Response $response, callable $next)
+    public function post(Request $request, FrameInterface $frame)
     {
         $valid = $this->validateRegister($request);
 
         if ($valid) {
-            return $this->formValid($request, $response, $next);
+            return $this->formValid($request, $frame);
         }
 
-        return $this->formInvalid($request, $response, $next);
+        return $this->formInvalid($request, $frame);
     }
 
     /**
      * render with errors
      */
-    protected function formInvalid(Request $request, Response $response, callable $next)
+    protected function formInvalid(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/register', [
             'error' => $this->validator->errors()
         ]);
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($html);
-        return $response
-            ->withBody($stream)
-            ->withHeader('Content-Type', 'text/html');
+
+        return $frame->getResponseFactory()->make($html, 200, [
+            'Content-Type' => 'text/html'
+        ]);
     }
 
     /**
      *
      */
-    protected function formValid($request, $response, $next)
+    protected function formValid(Request $request, FrameInterface $frame)
     {
         $user = $this->create($this->getAllRequestInput($request));
         $this->authenticator->login($request, $user, ModelBackend::class);
@@ -117,9 +111,10 @@ class RegisterAction extends BaseActionMiddleware
         if (method_exists($flash, 'info')) {
             $flash->info('Welcome, registration completed');
         }
-        return $response
-            ->withHeader('location', '/')
-            ->withStatus(302);
+
+        return $frame->getResponseFactory()->make('', 302, [
+            'location' => '/'
+        ]);
     }
 
     /**

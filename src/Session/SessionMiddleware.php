@@ -3,14 +3,14 @@
 namespace Pawon\Session;
 
 use Headbanger\Set;
-use Pawon\DateTime\DateTime;
 use Pawon\Cookie\Cookie;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response\RedirectResponse;
+use Pawon\DateTime\DateTime;
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
 use Pawon\Session\Exceptions\UpdateException;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
-class SessionMiddleware
+class SessionMiddleware implements MiddlewareInterface
 {
     protected $store;
 
@@ -28,22 +28,17 @@ class SessionMiddleware
     /**
      *
      */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function handle(Request $request, FrameInterface $frame)
+    {
         $session = $this->store;
         $cookies = $request->getCookieParams();
         $sessionId = isset($cookies[$session->getName()])
             ? $cookies[$session->getName()]
             : '';
         $session->setId($sessionId);
-        $request = $request->withAttribute('session', $session);
         // process the next middleware
-        $response = $next($request, $response);
+        $response = $frame->next($request->withAttribute('session', $session));
         // see what happen there
-        $session = $request->getAttribute('session', $session);
         $accessed = $session->isAccessed();
         $modified = $session->isModified();
         $empty = $session->isEmpty();
@@ -63,7 +58,9 @@ class SessionMiddleware
                     try {
                         $session->save();
                     } catch (UpdateException $e) {
-                        return new RedirectResponse($request->getUri()->getPath());
+                        return $frame->getResponseFactory->make('', 302, [
+                            'location', $this->getNoPermissionRedirectPath($request)
+                        ]);
                     }
                 }
             }
@@ -74,6 +71,9 @@ class SessionMiddleware
         return $response;
     }
 
+    /**
+     *
+     */
     protected function deleteCookieFromResponse($response, $session)
     {
         // delete the cookie

@@ -113,7 +113,6 @@ REGEX;
 
         if (preg_match_all('/'.self::COOKIE_PATTERN.'/m', $str, $matches)) {
             foreach (zip_longest($matches['key'], $matches['val']) as list($key, $val)) {
-
                 if ($key[0] === '$') {
                     if ($morshel) {
                         $morshel[substr($key, 1)] = $val;

@@ -2,10 +2,11 @@
 
 namespace Pawon\Auth;
 
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 
-class AuthenticationMiddleware
+class AuthenticationMiddleware implements MiddlewareInterface
 {
     /**
      * @var Pawon\Auth\Authenticator
@@ -23,13 +24,13 @@ class AuthenticationMiddleware
     /**
      *
      */
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function handle(Request $request, FrameInterface $frame)
     {
         // need a way to lazily instantiate this user, so the session middleware not patch
         // vary header, on every request.
         $user = $this->authenticator->user();
         $request = $request->withAttribute('user', $user);
 
-        return $next($request, $response);
+        return $frame->next($request);
     }
 }

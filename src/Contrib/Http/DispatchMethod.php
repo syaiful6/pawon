@@ -2,24 +2,19 @@
 
 namespace Pawon\Contrib\Http;
 
-use Psr\Http\Message\ResponseInterface as Response;
+use Pawon\Http\Middleware\FrameInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 trait DispatchMethod
 {
     /**
-    * Dispatch the request to our class method based http method
-    *
-    * @param Psr\Http\Message\ServerRequestInterface $request
-    * @param Psr\Http\Message\ResponseInterface $response
-    * @param callable $next
-    * @return Psr\Http\Message\ResponseInterface
-    */
-    public function __invoke(Request $request, Response $response, callable $next)
+     *
+     */
+    public function handle(Request $request, FrameInterface $frame)
     {
         if (method_exists($this, $method = strtolower($request->getMethod()))) {
-            return $this->$method($request, $response, $next);
+            return $this->$method($request, $frame);
         }
-        return $next($request, $response);
+        return $frame->next($request);
     }
 }

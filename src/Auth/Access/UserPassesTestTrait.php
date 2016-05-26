@@ -2,7 +2,7 @@
 
 namespace Pawon\Auth\Access;
 
-use Psr\Http\Message\ResponseInterface as Response;
+use Pawon\Http\Middleware\FrameInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
@@ -43,13 +43,13 @@ trait UserPassesTestTrait
     /**
      *
      */
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function handle(Request $request, FrameInterface $frame)
     {
         $callback = $this->getTestCallback($request);
         if (!$callback()) {
-            return $this->handleNoPermission($request, $response, $next);
+            return $this->handleNoPermission($request, $frame);
         }
 
-        return $this->handlePermissionPassed($request, $response, $next);
+        return $this->handlePermissionPassed($request, $frame);
     }
 }

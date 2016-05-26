@@ -4,11 +4,10 @@ namespace Pawon\Contrib\Auth;
 
 use Pawon\Auth\Authenticator;
 use Pawon\Cache\RateLimiter;
-use Zend\Diactoros\Stream;
 use Illuminate\Support\MessageBag;
 use Pawon\Contrib\Http\BaseActionMiddleware;
+use Pawon\Http\Middleware\FrameInterface;
 use Pawon\Flash\FlashMessageInterface as FlashMessage;
-use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use function Pawon\trans;
@@ -46,43 +45,43 @@ class LoginAction extends BaseActionMiddleware
     /**
      * Display the login form
      */
-    public function get(Request $request, Response $response, callable $next)
+    public function get(Request $request, FrameInterface $frame)
     {
         $user = $request->getAttribute('user');
         if ($user->isAuthenticate()) {
-            return $response
-                ->withHeader('location', '/')
-                ->withStatus(302);
+            return $frame->getResponseFactory()->make('', 302, [
+                'location' => '/'
+            ]);
         }
-        $html = $this->renderer->render('app::auth/login', ['error' => new MessageBag]);
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($html);
-        return $response
-            ->withBody($stream)
-            ->withHeader('Content-Type', 'text/html');
+        $html = $this->renderer->render('app::auth/login', [
+            'error' => new MessageBag
+        ]);
+        return $frame->getResponseFactory()->make($html, 200, [
+            'Content-Type' => 'text/html'
+        ]);
     }
 
     /**
      *
      */
-    public function post(Request $request, Response $response, callable $next)
+    public function post(Request $request, FrameInterface $frame)
     {
         $valid = $this->validateLogin($request);
 
         if ($valid) {
-            return $this->formValid($request, $response, $next);
+            return $this->formValid($request, $frame);
         }
 
-        return $this->formInvalid($request, $response, $next);
+        return $this->formInvalid($request, $frame);
     }
 
     /**
      *
      */
-    protected function formValid(Request $request, Response $response, callable $next)
+    protected function formValid(Request $request, FrameInterface $frame)
     {
         if ($this->hasTooManyLoginAttempts($request)) {
-            return $this->sendResponseLockout($request, $response);
+            return $this->sendResponseLockout($request, $frame);
         }
 
         $posted = $request->getParsedBody();
@@ -95,18 +94,18 @@ class LoginAction extends BaseActionMiddleware
             $this->authenticator->login($request, $user);
             $this->flash->info("Welcome {$user->name}.");
             $this->clearLoginAttempts($request);
-            return $response
-                ->withHeader('location', '/')
-                ->withStatus(302);
+            return $frame->getResponseFactory()->make('', 302, [
+                'location' => '/'
+            ]);
         }
 
         $this->flash->warning($this->getInvalidLoginMessage());
 
         $this->incrementLoginAttempts($request);
 
-        return $response
-            ->withHeader('location', $request->getUri()->getPath())
-            ->withStatus(302);
+        return $frame->getResponseFactory()->make('', 302, [
+            'location' => $request->getUri()->getPath()
+        ]);
     }
 
     /**
@@ -122,28 +121,27 @@ class LoginAction extends BaseActionMiddleware
     /**
      * render with errors
      */
-    protected function formInvalid(Request $request, Response $response, callable $next)
+    protected function formInvalid(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/login', [
             'error' => $this->validator->errors()
         ]);
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($html);
-        return $response
-            ->withBody($stream)
-            ->withHeader('Content-Type', 'text/html');
+        return $frame->getResponseFactory()->make($html, 200, [
+            'Content-Type' => 'text/html'
+        ]);
     }
 
     /**
      *
      */
-    protected function sendResponseLockout($request, $response)
+    protected function sendResponseLockout(Request $request, FrameInterface $frame)
     {
         $minutes = floor($this->secondsRemainingOnLockout($request) / 60);
         $this->flash($this->getLockoutErrorMessage($minutes));
-        return $response
-            ->withHeader('location', $request->getUri()->getPath())
-            ->withStatus(302);
+
+        return $frame->getResponseFactory()->make('', 302, [
+            'location' => $request->getUri()->getPath()
+        ]);
     }
 
     /**

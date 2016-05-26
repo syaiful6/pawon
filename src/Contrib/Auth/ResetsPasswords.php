@@ -2,23 +2,22 @@
 
 namespace Pawon\Contrib\Auth;
 
-use Zend\Diactoros\Stream;
 use Illuminate\Support\MessageBag;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Pawon\Auth\Access\UserPassesTestTrait;
 use Pawon\Contrib\Http\BaseActionMiddleware;
-use Psr\Http\Message\ResponseInterface as Response;
+use Pawon\Http\Middleware\FrameInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use function Pawon\trans;
 
 class ResetsPasswords extends BaseActionMiddleware
 {
     use UserPassesTestTrait {
-        __invoke as userPassedTest;
+        handle as userPassedTest;
     }
 
     /**
-     *
+     * @var Illuminate\Contracts\Auth\PasswordBroker
      */
     protected $broker;
 
@@ -44,9 +43,9 @@ class ResetsPasswords extends BaseActionMiddleware
     /**
      *
      */
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function handle(Request $request, FrameInterface $frame)
     {
-        return $this->userPassedTest($request, $response, $next);
+        return $this->userPassedTest($request, $frame);
     }
 
     /**
@@ -64,62 +63,57 @@ class ResetsPasswords extends BaseActionMiddleware
     /**
      *
      */
-    protected function handlePermissionPassed(
-        Request $request,
-        Response $response,
-        callable $next
-    ) {
-        return parent::__invoke($request, $response, $next);
+    protected function handlePermissionPassed(Request $request, FrameInterface $frame)
+    {
+        return parent::handle($request, $frame);
     }
 
     /**
      *
      */
-    public function get(Request $request, Response $response, callable $next)
+    public function get(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/passwords/email', [
             'error' => new MessageBag()
         ]);
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($html);
-        return $response
-            ->withBody($stream)
-            ->withHeader('Content-Type', 'text/html');
+
+        return $frame->getResponseFactory()->make($html, 200, [
+            'Content-Type' => 'text/html'
+        ]);
     }
 
     /**
      *
      */
-    public function post(Request $request, Response $response, callable $next)
+    public function post(Request $request, FrameInterface $frame)
     {
         $valid =  $this->isValid($request, ['email' => 'required|email']);
 
         if ($valid) {
-            return $this->sendResetLinkEmail($request, $response);
+            return $this->sendResetLinkEmail($request, $frame);
         }
 
-        return $this->formInvalid($request, $response, $next);
+        return $this->formInvalid($request, $frame);
     }
 
     /**
      * render with errors
      */
-    protected function formInvalid(Request $request, Response $response, callable $next)
+    protected function formInvalid(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/passwords/email', [
             'error' => $this->validator->errors()
         ]);
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($html);
-        return $response
-            ->withBody($stream)
-            ->withHeader('Content-Type', 'text/html');
+
+        return $frame->getResponseFactory()->make($html, 200, [
+            'Content-Type' => 'text/html'
+        ]);
     }
 
     /**
      *
      */
-    protected function sendResetLinkEmail($request, $response)
+    protected function sendResetLinkEmail(Request $request, FrameInterface $frame)
     {
         $input = $request->getParsedBody();
 
@@ -132,7 +126,7 @@ class ResetsPasswords extends BaseActionMiddleware
             case PasswordBroker::RESET_LINK_SENT:
                 return $this->getSendResetLinkEmailSuccessResponse(
                     $request,
-                    $response,
+                    $frame,
                     $out
                 );
 
@@ -140,7 +134,7 @@ class ResetsPasswords extends BaseActionMiddleware
             default:
                 return $this->getSendResetLinkEmailFailureResponse(
                     $request,
-                    $response,
+                    $frame,
                     $out
                 );
         }
@@ -149,31 +143,31 @@ class ResetsPasswords extends BaseActionMiddleware
     /**
      *
      */
-    protected function getSendResetLinkEmailSuccessResponse($request, $response, $out)
+    protected function getSendResetLinkEmailSuccessResponse($request, $frame, $out)
     {
         $flash = $request->getAttribute('_messages');
         if (is_callable([$flash, 'success'])) {
             $flash->success(trans($out));
         }
 
-        return $response
-            ->withHeader('location', $request->getUri()->getPath())
-            ->withStatus(302);
+        return $frame->getResponseFactory()->make('', 302, [
+            'location' => $request->getUri()->getPath()
+        ]);
     }
 
      /**
      *
      */
-    protected function getSendResetLinkEmailFailureResponse($request, $response, $out)
+    protected function getSendResetLinkEmailFailureResponse($request, $frame, $out)
     {
         $flash = $request->getAttribute('_messages');
         if (is_callable([$flash, 'warning'])) {
             $flash->warning(trans($out));
         }
 
-        return $response
-            ->withHeader('location', $request->getUri()->getPath())
-            ->withStatus(302);
+        return $frame->getResponseFactory()->make('', 302, [
+            'location' => $request->getUri()->getPath()
+        ]);
     }
 
     /**

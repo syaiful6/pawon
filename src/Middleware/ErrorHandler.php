@@ -2,37 +2,47 @@
 
 namespace Pawon\Middleware;
 
-use Zend\Diactoros\Stream;
+use Exception;
+use Whoops\Run as Whoops;
+use Whoops\Handler\PrettyPageHandler;
 use Pawon\Functional\Singledispatch;
-use Zend\Expressive\Template\TemplateRendererInterface as Template;
+use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Expressive\Template\TemplateRendererInterface as Template;
 
-class ErrorHandler
+class ErrorHandler implements MiddlewareInterface
 {
     protected $hander;
 
     protected $template;
 
+    protected $debug;
+
+    protected $whoopsHandler;
+
+    protected $whoops;
+
     /**
      *
      */
-    public function __construct(Template $template)
+    public function __construct(Template $template, $debug = false)
     {
         $this->template = $template;
+        $this->debug = $debug;
         $this->handler = new Singledispatch([$this, 'defaultHandler']);
+        $this->register(TokenMismatchException::class, [$this, 'handleTokenMistMatch']);
     }
     /**
      *
      */
-    public function __invoke($error, Request $request, Response $response, callable $next = null)
+    public function handle(Request $request, FrameInterface $frame)
     {
-        // that's expressive set error as 405
-        if (! is_object($error)) {
-            return $next($request, $response, $error);
+        try {
+            return $frame->next($request);
+        } catch (Exception $e) {
+            return call_user_func($this->handler, $request, $frame, $e);
         }
-        return call_user_func($this->handler, $error, $request, $response, $next);
     }
 
     /**
@@ -46,16 +56,57 @@ class ErrorHandler
     /**
      *
      */
-    public function defaultHandler($error, Request $request, Response $response, callable $next = null)
+    public function handleTokenMistMatch(Request $request, FrameInterface $frame, Exception $error)
     {
-        if ($error instanceof TokenMismatchException) {
-            $html = $this->template->render('error::csrf-403', [
-                'title' => 'Forbidden',
-                'main'  => 'CSRF verification failed. Request aborted.'
-            ]);
-            return new HtmlResponse($html, 403);
+        $html = $this->template->render('error::csrf-403', [
+            'title' => 'Forbidden',
+            'main'  => 'CSRF verification failed. Request aborted.'
+        ]);
+        return $frame->getResponseFactory->make($html, 403);
+    }
+
+    /**
+     *
+     */
+    public function setDebuggingHandler(Whoops $whoops, PrettyPageHandler $whoopsHandler)
+    {
+        $this->whoops = $whoops;
+        $this->whoopsHandler = $whoopsHandler;
+    }
+
+    /**
+     *
+     */
+    public function defaultHandler(Request $request, FrameInterface $frame, Exception $error)
+    {
+        if (!$this->debug) {
+            $html = $this->template->render('error::500', compact('error'));
+            return $frame->getResponseFactory->make($html, 500);
         }
 
-        return $next($request, $response, $error);
+        $this->prepareWhoopsHandler($request);
+        $this->whoops->pushHandler($this->whoopsHandler);
+
+        return $frame->getResponseFactory->make($this->whoops->handleException($error), 500);
+    }
+
+    /**
+     * Prepare the Whoops page handler with a table displaying request information
+     *
+     * @param Request $request
+     */
+    private function prepareWhoopsHandler(Request $request)
+    {
+        $uri = $request->getUri();
+        $this->whoopsHandler->addDataTable('Pawon Application Request', [
+            'HTTP Method'            => $request->getMethod(),
+            'URI'                    => (string) $uri,
+            'Script'                 => $request->getServerParams()['SCRIPT_NAME'],
+            'Headers'                => $request->getHeaders(),
+            'Cookies'                => $request->getCookieParams(),
+            'Attributes'             => $request->getAttributes(),
+            'Query String Arguments' => $request->getQueryParams(),
+            'Body Params'            => $request->getParsedBody(),
+        ]);
     }
 }

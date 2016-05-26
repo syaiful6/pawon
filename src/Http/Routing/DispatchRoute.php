@@ -17,7 +17,7 @@ class DispatchRoute implements MiddlewareInterface
     /**
      *
      */
-    public function __construct(callable $resolver)
+    public function __construct(RoutedMiddlewareResolver $resolver)
     {
         $this->resolver = $resolver;
     }
@@ -33,12 +33,11 @@ class DispatchRoute implements MiddlewareInterface
         }
 
         $sign = $result->getMatchedMiddleware();
-        $params = $result->getMatchedParams();
+        $inner = $this->resolver->resolve($sign);
 
-        $inner = call_user_func($this->resolver, $sign);
-
-        array_unshift($params, $request);
-
-        return $inner(...$params);
+        foreach ($result->getMatchedParams() as $param => $value) {
+            $request = $request->withAttribute($param, $value);
+        }
+        return $inner->handle($request, $frame);
     }
 }
