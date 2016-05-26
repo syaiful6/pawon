@@ -4,6 +4,7 @@ namespace Pawon\Core\Http\Server;
 
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerAwareInterface;
+use Zend\Diactoros\ServerRequestFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class SimpleHttpHandler extends BaseHttpHandler implements LoggerAwareInterface
@@ -17,13 +18,6 @@ class SimpleHttpHandler extends BaseHttpHandler implements LoggerAwareInterface
     protected $httpVersion = '1.0';
 
     protected $obLevel;
-    /**
-     *
-     */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
 
     /**
      *
@@ -35,6 +29,15 @@ class SimpleHttpHandler extends BaseHttpHandler implements LoggerAwareInterface
         $this->obLevel = ob_get_level();
 
         parent::serve($app);
+    }
+
+    /**
+     *
+     */
+    protected function setupRequest()
+    {
+        $request = ServerRequestFactory::fromGlobals();
+        $this->request = $request->withAttribute('pawon.file_wrapper', FileWrapper::class);
     }
 
     /**

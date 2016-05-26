@@ -34,6 +34,6 @@ class UrlHelperMiddleware implements MiddlewareInterface
             $this->helper->setRouteResult($result);
         }
 
-        return  $frame->next($request);
+        return $frame->next($request);
 	}
 }
