@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Pawon\Cookie\CookieFactory;
 use Pawon\Http\Middleware\FrameInterface;
 use Pawon\Http\Middleware\MiddlewareInterface;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class Csrf implements MiddlewareInterface
@@ -141,7 +142,7 @@ class Csrf implements MiddlewareInterface
     /**
      * Add cookie to response so it's easier for our frontend developer
      */
-    protected function addCookieToResponse($csrftoken, ResponseInterface $response)
+    protected function addCookieToResponse($csrftoken, Response $response)
     {
         if ($this->shouldRotate) {
             $token = $this->getNewCsrfToken();
@@ -231,7 +232,7 @@ class Csrf implements MiddlewareInterface
     /**
      *
      */
-    public function getToken(ServerRequestInterface $request)
+    public function getToken(Request $request)
     {
         $this->csrfTokenUsed = true;
         return $request->getAttribute('CSRF_COOKIE');

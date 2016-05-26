@@ -89,7 +89,7 @@ class SkipMiddlewarePipe extends MiddlewarePipe
      */
     private function normalize($middleware)
     {
-        if (is_callable($middleware) || $midlleware instanceof MiddlewareInterface) {
+        if (is_callable($middleware) || $middleware instanceof MiddlewareInterface) {
             return $middleware;
         }
 
@@ -129,7 +129,7 @@ class SkipMiddlewarePipe extends MiddlewarePipe
     {
         return new CallableMiddleware(function ($request, $frame) use ($middleware) {
             $md = $this->container->get($middleware);
-            if ($md instance MiddlewareInterface) {
+            if (!$md instanceof MiddlewareInterface) {
                 throw new \InvalidMiddlewareException(sprintf(
                     'Lazy-loaded middleware "%s" is not instance of %s',
                     $middleware,

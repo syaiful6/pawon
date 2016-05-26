@@ -2,7 +2,7 @@
 
 namespace Pawon\Http\Routing;
 
-use Pawon\Http\MiddlewareInterface;
+use Pawon\Http\Middleware\MiddlewareInterface;
 use Pawon\Http\Middleware\MiddlewarePipe;
 use Pawon\Http\Middleware\CallableMiddleware;
 use Interop\Container\ContainerInterface;
@@ -28,7 +28,7 @@ class ContainerRoutedMiddlewareResolver implements RoutedMiddlewareResolver
             return new CallableMiddleware($middleware);
         }
 
-        if ($middleware instance MiddlewareInterface) {
+        if ($middleware instanceof MiddlewareInterface) {
             return $middleware;
         }
         if (is_array($middleware)) {
@@ -67,8 +67,8 @@ class ContainerRoutedMiddlewareResolver implements RoutedMiddlewareResolver
     {
         return new CallableMiddleware(function ($request, $frame) use ($middleware) {
             $md = $this->container->get($middleware);
-            if ($md instance MiddlewareInterface) {
-                throw new \InvalidMiddlewareException(sprintf(
+            if (!$md instanceof MiddlewareInterface) {
+                throw new \InvalidArgumentException(sprintf(
                     'Lazy-loaded middleware "%s" is not instance of %s',
                     $middleware,
                     MiddlewareInterface::class

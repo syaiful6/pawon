@@ -64,7 +64,7 @@ class ErrorHandler implements MiddlewareInterface
             'title' => 'Forbidden',
             'main'  => 'CSRF verification failed. Request aborted.'
         ]);
-        return $frame->getResponseFactory->make($html, 403);
+        return $frame->getResponseFactory()->make($html, 403);
     }
 
     /**
@@ -74,7 +74,7 @@ class ErrorHandler implements MiddlewareInterface
     {
         $status = $error->getStatusCode();
         $html = $this->template->render('error::'.$status, compact('error', 'request'));
-        return $frame->getResponseFactory->make($html, $status, $error->getHeaders());
+        return $frame->getResponseFactory()->make($html, $status, $error->getHeaders());
     }
 
     /**
@@ -99,7 +99,7 @@ class ErrorHandler implements MiddlewareInterface
         $this->prepareWhoopsHandler($request);
         $this->whoops->pushHandler($this->whoopsHandler);
 
-        return $frame->getResponseFactory->make($this->whoops->handleException($error), 500);
+        return $frame->getResponseFactory()->make($this->whoops->handleException($error), 500);
     }
 
     /**

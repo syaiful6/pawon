@@ -57,7 +57,7 @@ class Application
     /**
      *
      */
-    private $routes;
+    private $routes = [];
 
     /**
      *
