@@ -8,7 +8,6 @@ use Pawon\Http\Middleware\MiddlewarePipe;
 use Interop\Container\ContainerInterface;
 use Pawon\Http\ResponseFactoryInterface;
 use Pawon\Http\Middleware\Frame;
-use Pawon\Http\Middleware\CallableMiddleware;
 use Pawon\Http\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Router\Route;
@@ -16,7 +15,7 @@ use Zend\Expressive\Router\RouterInterface;
 use function Itertools\zip;
 use function Itertools\to_array;
 
-class Application
+class Application extends MiddlewarePipe
 {
     /**
      * @var Interop\Container\ContainerInterface
@@ -32,11 +31,6 @@ class Application
      * @var callable
      */
     protected $finalHandler;
-
-    /**
-     * @var SplQueue
-     */
-    protected $queue;
 
     /**
      * @var Zend\Expressive\Router\RouterInterface
@@ -68,12 +62,11 @@ class Application
         ResponseFactoryInterface $factory,
         callable $finalHandler
     ) {
-
-        $this->queue = new SplQueue();
         $this->router = $router;
         $this->container = $container;
         $this->factory = $factory;
         $this->finalHandler = $finalHandler;
+        parent::__construct();
     }
 
     /**
@@ -113,7 +106,8 @@ class Application
      */
     public function pipe($middleware)
     {
-        $this->queue->enqueue($this->normalizeMiddleware($middleware));
+        $middleware = $this->prepareMiddleware($middleware);
+        parent::pipe($middleware);
     }
 
     /**
@@ -140,20 +134,18 @@ class Application
     /**
      *
      */
-    protected function normalizeMiddleware($middleware)
+    protected function prepareMiddleware($middleware)
     {
-        if ($middleware instanceof MiddlewareInterface) {
+        if (is_callable($middleware) || $middleware instanceof MiddlewareInterface) {
             return $middleware;
-        } elseif (is_callable($middleware)) {
-            return new CallableMiddleware($middleware);
         } elseif (is_string($middleware) && $this->container->has($middleware)) {
-            return new CallableMiddleware(function ($request, $frame) use ($middleware) {
+            return function ($request, $frame) use ($middleware) {
                 $md = $this->container->get($middleware);
 
                 return $md->handle($request, $frame);
-            });
+            };
         } elseif (is_array($middleware)) {
-            return $this->normalizePipeMiddleware($middleware);
+            return $this->preparePipeMiddleware($middleware);
         }
 
         throw new Exceptions\ImproperlyConfigured(sprintf(
@@ -166,13 +158,13 @@ class Application
     /**
      *
      */
-    private function normalizePipeMiddleware($middlewares)
+    private function preparePipeMiddleware($middlewares)
     {
         $middlewarePipe = new MiddlewarePipe();
 
         foreach ($middlewares as $middleware) {
             $middlewarePipe->pipe(
-                $this->normalizeMiddleware($middleware)
+                $this->prepareMiddleware($middleware)
             );
         }
 

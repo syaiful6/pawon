@@ -140,11 +140,11 @@ class AppFactory
             if ($item instanceof MiddlewareInterface || is_callable($item)) {
                 return $item;
             } elseif (is_string($item) && $container->has($item)) {
-                return new CallableMiddleware(function ($request, $frame) use ($item, $container) {
+                return function ($request, $frame) use ($item, $container) {
                     $md = $container->get($item);
 
                     return $md->handle($request, $frame);
-                });
+                };
             }
             throw new Exceptions\ImproperlyConfigured(sprintf(
                 'Invalid middleware detected. %s must be callable or instanceof %s',

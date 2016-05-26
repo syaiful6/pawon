@@ -43,7 +43,7 @@ class ErrorHandler implements MiddlewareInterface
         try {
             return $frame->next($request);
         } catch (Exception $e) {
-            return call_user_func($this->handler, $request, $frame, $e);
+            return call_user_func($this->handler, $e, $request, $frame);
         }
     }
 
@@ -58,8 +58,11 @@ class ErrorHandler implements MiddlewareInterface
     /**
      *
      */
-    public function handleTokenMistMatch(Request $request, FrameInterface $frame, Exception $error)
-    {
+    public function handleTokenMistMatch(
+        Exception $error,
+        Request $request,
+        FrameInterface $frame
+    ) {
         $html = $this->template->render('error::csrf-403', [
             'title' => 'Forbidden',
             'main'  => 'CSRF verification failed. Request aborted.'
@@ -70,8 +73,11 @@ class ErrorHandler implements MiddlewareInterface
     /**
      *
      */
-    public function handleHttpException(Request $request, FrameInterface $frame, Exception $error)
-    {
+    public function handleHttpException(
+        Exception $error,
+        Request $request,
+        FrameInterface $frame
+    ) {
         $status = $error->getStatusCode();
         $html = $this->template->render('error::'.$status, compact('error', 'request'));
         return $frame->getResponseFactory()->make($html, $status, $error->getHeaders());
@@ -89,8 +95,11 @@ class ErrorHandler implements MiddlewareInterface
     /**
      *
      */
-    public function defaultHandler(Request $request, FrameInterface $frame, Exception $error)
-    {
+    public function defaultHandler(
+        Exception $error,
+        Request $request,
+        FrameInterface $frame
+    ) {
         if (!$this->debug) {
             $html = $this->template->render('error::500', compact('error', 'request'));
             return $frame->getResponseFactory->make($html, 500);

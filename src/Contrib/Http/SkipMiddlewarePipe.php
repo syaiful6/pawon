@@ -6,7 +6,6 @@ use Interop\Container\ContainerInterface;
 use Pawon\Http\Middleware\FrameInterface;
 use Pawon\Http\Middleware\MiddlewareInterface;
 use Pawon\Http\Middleware\MiddlewarePipe;
-use Pawon\Http\Middleware\CallableMiddleware;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
@@ -128,7 +127,7 @@ class SkipMiddlewarePipe extends MiddlewarePipe
      */
     private function resolveLazyMiddlewareService($middleware)
     {
-        return new CallableMiddleware(function ($request, $frame) use ($middleware) {
+        return function ($request, $frame) use ($middleware) {
             $md = $this->container->get($middleware);
             if (!$md instanceof MiddlewareInterface) {
                 throw new \InvalidMiddlewareException(sprintf(
@@ -138,6 +137,6 @@ class SkipMiddlewarePipe extends MiddlewarePipe
                 ));
             }
             return $md->handle($request, $frame);
-        });
+        };
     }
 }
