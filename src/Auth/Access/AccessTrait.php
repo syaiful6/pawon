@@ -24,7 +24,7 @@ trait AccessTrait
             $flash->warning($this->getPermissionDeniedMessage());
         }
 
-        return $frame->getResponseFactory->make('', 302, [
+        return $frame->getResponseFactory()->make('', 302, [
             'location', $this->getNoPermissionRedirectPath($request)
         ]);
     }
