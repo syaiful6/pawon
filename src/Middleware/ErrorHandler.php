@@ -8,6 +8,7 @@ use Whoops\Handler\PrettyPageHandler;
 use Pawon\Functional\Singledispatch;
 use Pawon\Http\Middleware\FrameInterface;
 use Pawon\Http\Middleware\MiddlewareInterface;
+use Pawon\Http\Exceptions\HttpExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Zend\Expressive\Template\TemplateRendererInterface as Template;
 
@@ -32,6 +33,7 @@ class ErrorHandler implements MiddlewareInterface
         $this->debug = $debug;
         $this->handler = new Singledispatch([$this, 'defaultHandler']);
         $this->register(TokenMismatchException::class, [$this, 'handleTokenMistMatch']);
+        $this->register(HttpExceptionInterface::class, [$this, 'handleHttpException']);
     }
     /**
      *
@@ -68,6 +70,16 @@ class ErrorHandler implements MiddlewareInterface
     /**
      *
      */
+    public function handleHttpException(Request $request, FrameInterface $frame, Exception $error)
+    {
+        $status = $error->getStatusCode();
+        $html = $this->template->render('error::'.$status, compact('error', 'request'));
+        return $frame->getResponseFactory->make($html, $status, $error->getHeaders());
+    }
+
+    /**
+     *
+     */
     public function setDebuggingHandler(Whoops $whoops, PrettyPageHandler $whoopsHandler)
     {
         $this->whoops = $whoops;
@@ -80,7 +92,7 @@ class ErrorHandler implements MiddlewareInterface
     public function defaultHandler(Request $request, FrameInterface $frame, Exception $error)
     {
         if (!$this->debug) {
-            $html = $this->template->render('error::500', compact('error'));
+            $html = $this->template->render('error::500', compact('error', 'request'));
             return $frame->getResponseFactory->make($html, 500);
         }
 

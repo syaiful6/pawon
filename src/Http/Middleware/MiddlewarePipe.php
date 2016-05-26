@@ -51,7 +51,7 @@ class MiddlewarePipe implements MiddlewareInterface
     /**
      *
      */
-    protected function normalizeMiddleware($md)
+    protected function normalizeMiddleware($middleware)
     {
         if ($middleware instanceof MiddlewareInterface) {
             return $middleware;

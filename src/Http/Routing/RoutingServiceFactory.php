@@ -34,7 +34,7 @@ class RoutingServiceFactory
     /**
      *
      */
-    private function RoutingMiddleware($container)
+    private function createRoutingMiddleware($container)
     {
         return new RoutingMiddleware($container->get(Router::class));
     }

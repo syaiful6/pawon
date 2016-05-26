@@ -53,7 +53,7 @@ class AppFactory
     private function injectPipeline(array $collections, $container, $app)
     {
         $queue = array_reduce(
-            array_map($this->createCollectionMapper($container), $collection),
+            array_map($this->createCollectionMapper($container), $collections),
             $this->createPriorityQueueReducer(),
             new SplPriorityQueue()
         );

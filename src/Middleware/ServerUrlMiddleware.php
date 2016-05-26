@@ -28,6 +28,6 @@ class ServerUrlMiddleware implements MiddlewareInterface
 	public function handle(Request $request, FrameInterface $frame)
 	{
 		$this->helper->setUri($request->getUri());
-        return $frame->next($request, $response);
+        return $frame->next($request);
 	}
 }

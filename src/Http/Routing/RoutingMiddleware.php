@@ -2,6 +2,7 @@
 
 namespace Pawon\Http\Routing;
 
+use Pawon\Http\Exceptions\Http404;
 use Zend\Expressive\Router\RouteResult;
 use Pawon\Http\Middleware\FrameInterface;
 use Pawon\Http\Middleware\MiddlewareInterface;
@@ -39,7 +40,8 @@ class RoutingMiddleware implements MiddlewareInterface
                 $factory = $frame->getResponseFactory();
                 return $factory->make('Method not allowed', 405, $headers);
             }
-            return $frame->next($request);
+
+            throw new Http404();
         }
 
         // Inject the actual route result
