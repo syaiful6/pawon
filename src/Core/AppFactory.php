@@ -7,6 +7,7 @@ use Zend\Expressive\Exception;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\FastRouteRouter;
+use Pawon\Http\Exceptions\HttpException;
 use Pawon\Http\ResponseFactoryInterface;
 use Pawon\Http\Middleware\MiddlewarePipe;
 use Pawon\Http\Middleware\CallableMiddleware;
@@ -24,7 +25,9 @@ class AppFactory
         $router = $container->has(RouterInterface::class)
             ? $container->get(RouterInterface::class)
             : new FastRouteRouter();
-        $finalHandler = function () {};
+        $finalHandler = function () {
+            throw new HttpException(500, 'not handled');
+        };
         $app = new Application($container, $router, $factory, $finalHandler);
 
         $this->injectRoutesAndPipeline($container, $app);
