@@ -3,15 +3,16 @@
 namespace Pawon\Auth\Access;
 
 use Pawon\Http\Middleware\FrameInterface;
+use Pawon\Auth\Exceptions\PermissionDenied;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 trait AccessTrait
 {
     /**
      * handle denied request. If shouldPipeToError return truthy then it will
-     * call next callback with instance of PermissionDenied. It will give the error
-     * handler do whatever they want. If it return falsely then we will redirect
-     * them returned by getNoPermissionRedirectPath
+     * throw PermissionDenied then hope there an error handler that catch them.
+     * it give the handler do whatever they want. If it return falsely then
+     * we will redirect them returned by getNoPermissionRedirectPath
      *
      */
     protected function handleNoPermission(Request $request, FrameInterface $frame)

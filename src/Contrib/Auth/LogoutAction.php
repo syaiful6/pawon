@@ -4,8 +4,8 @@ namespace Pawon\Contrib\Auth;
 
 use Pawon\Auth\Authenticator;
 use Pawon\Auth\Access\LoginRequiredTrait;
-use Pawon\Http\Middleware\FrameInterface;
 use Pawon\Http\Middleware\MiddlewareInterface;
+use Pawon\Http\Middleware\FrameInterface as Frame;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use function Pawon\trans;
 

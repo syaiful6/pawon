@@ -141,7 +141,5 @@ class SimpleHttpHandler extends BaseHttpHandler implements LoggerAwareInterface
         if ($this->logger) {
             $this->logger->critical($e);
         }
-        echo $e->getMessage();
-        echo $e->getTraceAsString();
     }
 }
