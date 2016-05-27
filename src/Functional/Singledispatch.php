@@ -3,7 +3,7 @@
 namespace Pawon\Functional;
 
 /**
- * An object that will act differently according to first parameter. That first
+ * A callable object that will act differently according to first parameter. That first
  * parameter should be an object. The behaviour depending the registered handler
  * when they are not found then the it fallback to a given callback when created
  * this object.
