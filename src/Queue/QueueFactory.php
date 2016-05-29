@@ -42,7 +42,7 @@ class QueueFactory implements FactoryContract
     {
         $name = $name ?: $this->getDefaultDriver();
 
-        if (! isset($this->connections[$name])) {
+        if (!isset($this->connections[$name])) {
             $this->connections[$name] = $this->resolve($name);
 
             $this->connections[$name]->setContainer($this->container);
@@ -57,7 +57,8 @@ class QueueFactory implements FactoryContract
     /**
      * Resolve a queue connection.
      *
-     * @param  string  $name
+     * @param string $name
+     *
      * @return \Illuminate\Contracts\Queue\Queue
      */
     protected function resolve($name)
@@ -70,7 +71,8 @@ class QueueFactory implements FactoryContract
     /**
      * Get the connector for a given driver.
      *
-     * @param  string  $driver
+     * @param string $driver
+     *
      * @return \App\Queue\Connectors\Connector
      *
      * @throws \InvalidArgumentException
@@ -87,9 +89,8 @@ class QueueFactory implements FactoryContract
     /**
      * Add a queue connection resolver.
      *
-     * @param  string    $driver
-     * @param  \Closure  $resolver
-     * @return void
+     * @param string   $driver
+     * @param \Closure $resolver
      */
     public function addConnector($driver, Closure $resolver)
     {
@@ -99,7 +100,8 @@ class QueueFactory implements FactoryContract
     /**
      * Get the queue connection configuration.
      *
-     * @param  string  $name
+     * @param string $name
+     *
      * @return array
      */
     protected function getConfig($name)

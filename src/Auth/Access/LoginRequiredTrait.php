@@ -16,7 +16,7 @@ trait LoginRequiredTrait
     {
         $user = $request->getAttribute('user');
         assert(method_exists($user, 'isAuthenticate'));
-        if (! $user->isAuthenticate()) {
+        if (!$user->isAuthenticate()) {
             return $this->handleNoPermission($request, $frame);
         }
 

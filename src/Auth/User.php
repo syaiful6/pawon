@@ -32,7 +32,7 @@ class User extends Model
     ];
 
     /**
-     * this should mutate to DateTime
+     * this should mutate to DateTime.
      */
     protected $dates = ['last_login', 'date_joined'];
 }

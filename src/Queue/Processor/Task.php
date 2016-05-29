@@ -7,7 +7,6 @@ use SplStack;
 
 class Task
 {
-
     protected $taskId;
 
     protected $coroutine;
@@ -43,14 +42,17 @@ class Task
     {
         if ($this->beforeFirstYield) {
             $this->beforeFirstYield = false;
+
             return $this->coroutine->current();
         } elseif ($this->exception) {
             $retval = $this->coroutine->throw($this->exception);
             $this->exception = null;
+
             return $retval;
         } else {
             $retval = $this->coroutine->send($this->sendValue);
             $this->sendValue = null;
+
             return $retval;
         }
     }

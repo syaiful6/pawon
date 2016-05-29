@@ -9,7 +9,6 @@ use Pawon\Contrib\Http\BaseActionMiddleware;
 use Pawon\Http\Middleware\FrameInterface;
 use Pawon\Flash\FlashMessageInterface as FlashMessage;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use function Pawon\trans;
 
 class LoginAction extends BaseActionMiddleware
@@ -25,7 +24,7 @@ class LoginAction extends BaseActionMiddleware
     protected $limiter;
 
     /**
-     * App\Flash\FlashMessageInterface
+     * App\Flash\FlashMessageInterface.
      */
     protected $flash;
 
@@ -43,21 +42,22 @@ class LoginAction extends BaseActionMiddleware
     }
 
     /**
-     * Display the login form
+     * Display the login form.
      */
     public function get(Request $request, FrameInterface $frame)
     {
         $user = $request->getAttribute('user');
         if ($user->isAuthenticate()) {
             return $frame->getResponseFactory()->make('', 302, [
-                'location' => '/'
+                'location' => '/',
             ]);
         }
         $html = $this->renderer->render('app::auth/login', [
-            'error' => new MessageBag
+            'error' => new MessageBag(),
         ]);
+
         return $frame->getResponseFactory()->make($html, 200, [
-            'Content-Type' => 'text/html'
+            'Content-Type' => 'text/html',
         ]);
     }
 
@@ -87,15 +87,16 @@ class LoginAction extends BaseActionMiddleware
         $posted = $request->getParsedBody();
         $credential = [
             'email' => $posted['email'],
-            'password' => $posted['password']
+            'password' => $posted['password'],
         ];
         $user = $this->authenticator->authenticate($credential);
         if ($user) {
             $this->authenticator->login($request, $user);
             $this->flash->info("Welcome {$user->name}.");
             $this->clearLoginAttempts($request);
+
             return $frame->getResponseFactory()->make('', 302, [
-                'location' => '/'
+                'location' => '/',
             ]);
         }
 
@@ -104,7 +105,7 @@ class LoginAction extends BaseActionMiddleware
         $this->incrementLoginAttempts($request);
 
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => $request->getUri()->getPath()
+            'location' => $request->getUri()->getPath(),
         ]);
     }
 
@@ -119,15 +120,16 @@ class LoginAction extends BaseActionMiddleware
     }
 
     /**
-     * render with errors
+     * render with errors.
      */
     protected function formInvalid(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/login', [
-            'error' => $this->validator->errors()
+            'error' => $this->validator->errors(),
         ]);
+
         return $frame->getResponseFactory()->make($html, 200, [
-            'Content-Type' => 'text/html'
+            'Content-Type' => 'text/html',
         ]);
     }
 
@@ -140,14 +142,15 @@ class LoginAction extends BaseActionMiddleware
         $this->flash($this->getLockoutErrorMessage($minutes));
 
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => $request->getUri()->getPath()
+            'location' => $request->getUri()->getPath(),
         ]);
     }
 
     /**
      * Get the login lockout error message.
      *
-     * @param  int  $seconds
+     * @param int $seconds
+     *
      * @return string
      */
     protected function getLockoutErrorMessage($minutes)
@@ -160,7 +163,8 @@ class LoginAction extends BaseActionMiddleware
     /**
      * Determine if the user has too many failed login attempts.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     protected function hasTooManyLoginAttempts(Request $request)
@@ -176,7 +180,8 @@ class LoginAction extends BaseActionMiddleware
     /**
      * Get the lockout seconds.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return int
      */
     protected function secondsRemainingOnLockout(Request $request)
@@ -197,7 +202,8 @@ class LoginAction extends BaseActionMiddleware
     /**
      * Determine how many retries are left for the user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return int
      */
     protected function retriesLeft(Request $request)
@@ -211,7 +217,8 @@ class LoginAction extends BaseActionMiddleware
     /**
      * Increment the login attempts for the user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return int
      */
     protected function incrementLoginAttempts(Request $request)
@@ -228,6 +235,7 @@ class LoginAction extends BaseActionMiddleware
     {
         $post = $request->getParsedBody();
         $ip = $this->extractClientIpFromRequest($request);
+
         return $post['email'].'|'.$ip;
     }
 
@@ -248,7 +256,7 @@ class LoginAction extends BaseActionMiddleware
     }
 
     /**
-     * I believe this should done on framework
+     * I believe this should done on framework.
      */
     protected function extractClientIpFromRequest($request)
     {
@@ -262,6 +270,7 @@ class LoginAction extends BaseActionMiddleware
         }
         $proxies = array_map('trim', explode(',', $proxies[0]));
         $ip = array_pop($proxies);
+
         return $ip;
     }
 
@@ -272,7 +281,7 @@ class LoginAction extends BaseActionMiddleware
     {
         return $this->isValid($request, [
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
     }
 }

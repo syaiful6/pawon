@@ -36,6 +36,7 @@ class ResetsPasswords extends BaseActionMiddleware
     {
         return function () use ($request) {
             $user = $request->getAttribute('user');
+
             return $user && !$user->isAuthenticate();
         };
     }
@@ -49,7 +50,7 @@ class ResetsPasswords extends BaseActionMiddleware
     }
 
     /**
-     * Give the user an helpfull message here
+     * Give the user an helpfull message here.
      *
      * @return string
      */
@@ -74,11 +75,11 @@ class ResetsPasswords extends BaseActionMiddleware
     public function get(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/passwords/email', [
-            'error' => new MessageBag()
+            'error' => new MessageBag(),
         ]);
 
         return $frame->getResponseFactory()->make($html, 200, [
-            'Content-Type' => 'text/html'
+            'Content-Type' => 'text/html',
         ]);
     }
 
@@ -87,7 +88,7 @@ class ResetsPasswords extends BaseActionMiddleware
      */
     public function post(Request $request, FrameInterface $frame)
     {
-        $valid =  $this->isValid($request, ['email' => 'required|email']);
+        $valid = $this->isValid($request, ['email' => 'required|email']);
 
         if ($valid) {
             return $this->sendResetLinkEmail($request, $frame);
@@ -97,16 +98,16 @@ class ResetsPasswords extends BaseActionMiddleware
     }
 
     /**
-     * render with errors
+     * render with errors.
      */
     protected function formInvalid(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/passwords/email', [
-            'error' => $this->validator->errors()
+            'error' => $this->validator->errors(),
         ]);
 
         return $frame->getResponseFactory()->make($html, 200, [
-            'Content-Type' => 'text/html'
+            'Content-Type' => 'text/html',
         ]);
     }
 
@@ -151,11 +152,11 @@ class ResetsPasswords extends BaseActionMiddleware
         }
 
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => $request->getUri()->getPath()
+            'location' => $request->getUri()->getPath(),
         ]);
     }
 
-     /**
+    /**
      *
      */
     protected function getSendResetLinkEmailFailureResponse($request, $frame, $out)
@@ -166,7 +167,7 @@ class ResetsPasswords extends BaseActionMiddleware
         }
 
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => $request->getUri()->getPath()
+            'location' => $request->getUri()->getPath(),
         ]);
     }
 

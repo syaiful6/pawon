@@ -38,11 +38,10 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     /**
      * Create a new token repository instance.
      *
-     * @param  \Illuminate\Database\ConnectionInterface  $connection
-     * @param  string  $table
-     * @param  string  $secret
-     * @param  int  $expires
-     * @return void
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param string                                   $table
+     * @param string                                   $secret
+     * @param int                                      $expires
      */
     public function __construct(ConnectionInterface $connection, $table, $secret, $expires = 60)
     {
@@ -71,7 +70,8 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     /**
      * Delete all existing reset tokens from the database.
      *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @param \Illuminate\Contracts\Auth\CanResetPassword $user
+     *
      * @return int
      */
     protected function deleteExisting($email)
@@ -82,8 +82,9 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     /**
      * Determine if a token record exists and is valid.
      *
-     * @param  object  $user
-     * @param  string  $token
+     * @param object $user
+     * @param string $token
+     *
      * @return bool
      */
     public function exists($user, $token)
@@ -93,14 +94,15 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
         $email = $user->getEmail();
         $token = (array) $this->getTable()->where('email', $email)->where('token', $token)->first();
 
-        return $token && ! $this->tokenExpired($token);
+        return $token && !$this->tokenExpired($token);
     }
 
     /**
      * Build the record payload for the table.
      *
-     * @param  string  $email
-     * @param  string  $token
+     * @param string $email
+     * @param string $token
+     *
      * @return array
      */
     protected function getPayload($email, $token)
@@ -111,7 +113,8 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     /**
      * Determine if the token has expired.
      *
-     * @param  array  $token
+     * @param array $token
+     *
      * @return bool
      */
     protected function tokenExpired($token)
@@ -134,8 +137,7 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     /**
      * Delete a token record by token.
      *
-     * @param  string  $token
-     * @return void
+     * @param string $token
      */
     public function delete($token)
     {
@@ -144,8 +146,6 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
 
     /**
      * Delete expired tokens.
-     *
-     * @return void
      */
     public function deleteExpired()
     {

@@ -11,14 +11,14 @@ class Morshel extends HashMap
     const LEGALCHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&\'*+-.^_`|~:';
 
     private $reserved = [
-        'expires'  => 'expires',
-        'path'     => 'Path',
-        'comment'  => 'Comment',
-        'domain'   => 'Domain',
-        'max-age'  => 'Max-Age',
-        'secure'   => 'Secure',
+        'expires' => 'expires',
+        'path' => 'Path',
+        'comment' => 'Comment',
+        'domain' => 'Domain',
+        'max-age' => 'Max-Age',
+        'secure' => 'Secure',
         'httponly' => 'HttpOnly',
-        'version'  => 'Version',
+        'version' => 'Version',
     ];
 
     private $flags = [
@@ -48,7 +48,7 @@ class Morshel extends HashMap
     public function offsetSet($key, $value)
     {
         $k = strtolower($key);
-        if (! array_key_exists($k, $this->reserved)) {
+        if (!array_key_exists($k, $this->reserved)) {
             throw new CookieException(sprintf(
                 'Invalid Attribute %s',
                 $key
@@ -131,7 +131,7 @@ class Morshel extends HashMap
             if ($value === '') {
                 continue;
             }
-            if (! array_key_exists($key, $attrs)) {
+            if (!array_key_exists($key, $attrs)) {
                 continue;
             }
             if ($key === 'expires') {
@@ -139,7 +139,7 @@ class Morshel extends HashMap
                 if ($value instanceof \DateTime
                     || $value instanceof \DateTimeInterface) {
                     $exp = gmdate('D, d-M-Y H:i:s T', $value->format('U'));
-                } elseif (! is_numeric($value)) {
+                } elseif (!is_numeric($value)) {
                     $totime = strtotime($value);
                     if (false !== $totime && -1 !== $totime) {
                         $exp = gmdate('D, d-M-Y H:i:s T', $totime);

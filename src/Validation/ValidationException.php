@@ -23,9 +23,8 @@ class ValidationException extends Exception
     /**
      * Create a new exception instance.
      *
-     * @param  \App\Validation\Validator  $validator
-     * @param  \Psr\Http\Message\ResponseInterface  $response
-     * @return void
+     * @param \App\Validation\Validator           $validator
+     * @param \Psr\Http\Message\ResponseInterface $response
      */
     public function __construct($validator, $response = null)
     {

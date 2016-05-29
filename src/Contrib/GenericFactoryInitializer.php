@@ -7,7 +7,6 @@ use Interop\Container\ContainerInterface;
 use Pawon\Contrib\Bus\CommandBusAwareInterface;
 use Pawon\Contrib\Http\BaseActionMiddleware;
 use Pawon\Validation\ValidatorFactoryAwareInterface;
-use Zend\ServiceManager\Initializer\InitializerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface as Template;
 use Illuminate\Contracts\Validation\Factory as FactoryContract;
 

@@ -22,6 +22,7 @@ trait CacheKeyTrait
                 return $func;
             }
         }
+
         return [$this, 'defaultCacheKey'];
     }
 }

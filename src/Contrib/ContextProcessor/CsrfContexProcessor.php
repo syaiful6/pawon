@@ -18,8 +18,10 @@ class CsrfContexProcessor
             if (!$token) {
                 $token = 'NOTPROVIDED'; // for debugging
             }
+
             return $token;
         };
+
         return ['csrftoken' => new LazyString($token)];
     }
 }

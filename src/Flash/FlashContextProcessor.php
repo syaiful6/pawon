@@ -12,8 +12,9 @@ class FlashContextProcessor
     public function __invoke(Request $request)
     {
         $flash = $request->getAttribute('_messages');
+
         return [
-            'messages' => $flash->get($request)
+            'messages' => $flash->get($request),
         ];
     }
 }

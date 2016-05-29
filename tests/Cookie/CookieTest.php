@@ -1,6 +1,6 @@
 <?php
 
-namespace Pawon\Tests\Cookie;
+namespace Pawon\tests\Cookie;
 
 use PHPUnit_Framework_TestCase;
 use Pawon\Cookie\Cookie;

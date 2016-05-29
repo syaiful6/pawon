@@ -28,7 +28,7 @@ class WhoopsPageHandlerFactory
      */
     private function injectEditor(PrettyPageHandler $handler, $config, ContainerInterface $container)
     {
-        if (! isset($config['editor'])) {
+        if (!isset($config['editor'])) {
             return;
         }
 
@@ -36,10 +36,11 @@ class WhoopsPageHandlerFactory
 
         if (is_callable($editor)) {
             $handler->setEditor($editor);
+
             return;
         }
 
-        if (! is_string($editor)) {
+        if (!is_string($editor)) {
             throw new Exceptions\ImproperlyConfigured(sprintf(
                 'Whoops editor must be a string editor name, string service name, or callable; received "%s"',
                 (is_object($editor) ? get_class($editor) : gettype($editor))

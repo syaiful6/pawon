@@ -3,7 +3,6 @@
 namespace Pawon\Console;
 
 use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -70,17 +69,15 @@ abstract class Command extends SymfonyCommand
      * @var array
      */
     protected $verbosityMap = [
-        'v'      => OutputInterface::VERBOSITY_VERBOSE,
-        'vv'     => OutputInterface::VERBOSITY_VERY_VERBOSE,
-        'vvv'    => OutputInterface::VERBOSITY_DEBUG,
-        'quiet'  => OutputInterface::VERBOSITY_QUIET,
+        'v' => OutputInterface::VERBOSITY_VERBOSE,
+        'vv' => OutputInterface::VERBOSITY_VERY_VERBOSE,
+        'vvv' => OutputInterface::VERBOSITY_DEBUG,
+        'quiet' => OutputInterface::VERBOSITY_QUIET,
         'normal' => OutputInterface::VERBOSITY_NORMAL,
     ];
 
     /**
      * Create a new console command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -92,15 +89,13 @@ abstract class Command extends SymfonyCommand
 
         $this->setDescription($this->description);
 
-        if (! isset($this->signature)) {
+        if (!isset($this->signature)) {
             $this->specifyParameters();
         }
     }
 
     /**
      * Configure the console command using a fluent definition.
-     *
-     * @return void
      */
     protected function configureUsingFluentDefinition()
     {
@@ -119,8 +114,6 @@ abstract class Command extends SymfonyCommand
 
     /**
      * Specify the arguments and options on the command.
-     *
-     * @return void
      */
     protected function specifyParameters()
     {
@@ -139,8 +132,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Run the console command.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     *
      * @return int
      */
     public function run(InputInterface $input, OutputInterface $output)
@@ -155,8 +149,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Execute the console command.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     *
      * @return mixed
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -169,8 +164,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Call another console command.
      *
-     * @param  string  $command
-     * @param  array   $arguments
+     * @param string $command
+     * @param array  $arguments
+     *
      * @return int
      */
     public function call($command, array $arguments = [])
@@ -185,8 +181,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Call another console command silently.
      *
-     * @param  string  $command
-     * @param  array   $arguments
+     * @param string $command
+     * @param array  $arguments
+     *
      * @return int
      */
     public function callSilent($command, array $arguments = [])
@@ -195,7 +192,7 @@ abstract class Command extends SymfonyCommand
 
         $arguments['command'] = $command;
 
-        return $instance->run(new ArrayInput($arguments), new NullOutput);
+        return $instance->run(new ArrayInput($arguments), new NullOutput());
     }
 
     /**
@@ -212,14 +209,15 @@ abstract class Command extends SymfonyCommand
     /**
      * Resolve the object method's type-hinted dependencies.
      *
-     * @param  array  $parameters
-     * @param  object  $instance
-     * @param  string  $method
+     * @param array  $parameters
+     * @param object $instance
+     * @param string $method
+     *
      * @return array
      */
     protected function resolveClassMethodDependencies(array $parameters, $instance, $method)
     {
-        if (! method_exists($instance, $method)) {
+        if (!method_exists($instance, $method)) {
             return $parameters;
         }
 
@@ -232,8 +230,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Resolve the given method's type-hinted dependencies.
      *
-     * @param  array  $parameters
-     * @param  \ReflectionFunctionAbstract  $reflector
+     * @param array                       $parameters
+     * @param \ReflectionFunctionAbstract $reflector
+     *
      * @return array
      */
     public function resolveMethodDependencies(array $parameters, \ReflectionFunctionAbstract $reflector)
@@ -258,9 +257,10 @@ abstract class Command extends SymfonyCommand
     /**
      * Attempt to transform the given parameter into a class instance.
      *
-     * @param  \ReflectionParameter  $parameter
-     * @param  array  $parameters
-     * @param  array  $originalParameters
+     * @param \ReflectionParameter $parameter
+     * @param array                $parameters
+     * @param array                $originalParameters
+     *
      * @return mixed
      */
     protected function transformDependency(\ReflectionParameter $parameter, $parameters, $originalParameters)
@@ -270,7 +270,7 @@ abstract class Command extends SymfonyCommand
         // If the parameter has a type-hinted class, we will check to see if it is already in
         // the list of parameters. If it is we will just skip it as it is probably a model
         // binding and we do not want to mess with those; otherwise, we resolve it here.
-        if ($class && ! $this->alreadyInParameters($class->name, $parameters)) {
+        if ($class && !$this->alreadyInParameters($class->name, $parameters)) {
             return $this->container->get($class->name);
         }
     }
@@ -278,8 +278,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Determine if an object of the given class is in a list of parameters.
      *
-     * @param  string  $class
-     * @param  array  $parameters
+     * @param string $class
+     * @param array  $parameters
+     *
      * @return bool
      */
     protected function alreadyInParameters($class, array $parameters)
@@ -289,16 +290,16 @@ abstract class Command extends SymfonyCommand
                 return true;
             }
         }
+
         return false;
     }
 
     /**
      * Splice the given value into the parameter list.
      *
-     * @param  array  $parameters
-     * @param  string  $key
-     * @param  mixed  $instance
-     * @return void
+     * @param array  $parameters
+     * @param string $key
+     * @param mixed  $instance
      */
     protected function spliceIntoParameters(array &$parameters, $key, $instance)
     {
@@ -313,7 +314,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Get the value of a command argument.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return string|array
      */
     public function argument($key = null)
@@ -328,7 +330,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Get the value of a command option.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return string|array
      */
     public function option($key = null)
@@ -343,8 +346,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Confirm a question with the user.
      *
-     * @param  string  $question
-     * @param  bool    $default
+     * @param string $question
+     * @param bool   $default
+     *
      * @return bool
      */
     public function confirm($question, $default = false)
@@ -355,8 +359,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Prompt the user for input.
      *
-     * @param  string  $question
-     * @param  string  $default
+     * @param string $question
+     * @param string $default
+     *
      * @return string
      */
     public function ask($question, $default = null)
@@ -367,9 +372,10 @@ abstract class Command extends SymfonyCommand
     /**
      * Prompt the user for input with auto completion.
      *
-     * @param  string  $question
-     * @param  array   $choices
-     * @param  string  $default
+     * @param string $question
+     * @param array  $choices
+     * @param string $default
+     *
      * @return string
      */
     public function anticipate($question, array $choices, $default = null)
@@ -380,9 +386,10 @@ abstract class Command extends SymfonyCommand
     /**
      * Prompt the user for input with auto completion.
      *
-     * @param  string  $question
-     * @param  array   $choices
-     * @param  string  $default
+     * @param string $question
+     * @param array  $choices
+     * @param string $default
+     *
      * @return string
      */
     public function askWithCompletion($question, array $choices, $default = null)
@@ -397,8 +404,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Prompt the user for input but hide the answer from the console.
      *
-     * @param  string  $question
-     * @param  bool    $fallback
+     * @param string $question
+     * @param bool   $fallback
+     *
      * @return string
      */
     public function secret($question, $fallback = true)
@@ -413,11 +421,12 @@ abstract class Command extends SymfonyCommand
     /**
      * Give the user a single choice from an array of answers.
      *
-     * @param  string  $question
-     * @param  array   $choices
-     * @param  string  $default
-     * @param  mixed   $attempts
-     * @param  bool    $multiple
+     * @param string $question
+     * @param array  $choices
+     * @param string $default
+     * @param mixed  $attempts
+     * @param bool   $multiple
+     *
      * @return string
      */
     public function choice(
@@ -437,10 +446,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Format input to textual table.
      *
-     * @param  array   $headers
-     * @param  \Illuminate\Contracts\Support\Arrayable|array  $rows
-     * @param  string  $style
-     * @return void
+     * @param array                                         $headers
+     * @param \Illuminate\Contracts\Support\Arrayable|array $rows
+     * @param string                                        $style
      */
     public function table(array $headers, $rows, $style = 'default')
     {
@@ -452,9 +460,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as information output.
      *
-     * @param  string  $string
-     * @param  null|int|string  $verbosity
-     * @return void
+     * @param string          $string
+     * @param null|int|string $verbosity
      */
     public function info($string, $verbosity = null)
     {
@@ -464,10 +471,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as standard output.
      *
-     * @param  string  $string
-     * @param  string  $style
-     * @param  null|int|string  $verbosity
-     * @return void
+     * @param string          $string
+     * @param string          $style
+     * @param null|int|string $verbosity
      */
     public function line($string, $style = null, $verbosity = null)
     {
@@ -479,9 +485,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as comment output.
      *
-     * @param  string  $string
-     * @param  null|int|string  $verbosity
-     * @return void
+     * @param string          $string
+     * @param null|int|string $verbosity
      */
     public function comment($string, $verbosity = null)
     {
@@ -491,9 +496,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as question output.
      *
-     * @param  string  $string
-     * @param  null|int|string  $verbosity
-     * @return void
+     * @param string          $string
+     * @param null|int|string $verbosity
      */
     public function question($string, $verbosity = null)
     {
@@ -503,9 +507,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as error output.
      *
-     * @param  string  $string
-     * @param  null|int|string  $verbosity
-     * @return void
+     * @param string          $string
+     * @param null|int|string $verbosity
      */
     public function error($string, $verbosity = null)
     {
@@ -515,13 +518,12 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as warning output.
      *
-     * @param  string  $string
-     * @param  null|int|string  $verbosity
-     * @return void
+     * @param string          $string
+     * @param null|int|string $verbosity
      */
     public function warn($string, $verbosity = null)
     {
-        if (! $this->output->getFormatter()->hasStyle('warning')) {
+        if (!$this->output->getFormatter()->hasStyle('warning')) {
             $style = new OutputFormatterStyle('yellow');
 
             $this->output->getFormatter()->setStyle('warning', $style);
@@ -533,14 +535,15 @@ abstract class Command extends SymfonyCommand
     /**
      * Get the verbosity level in terms of Symfony's OutputInterface level.
      *
-     * @param  string|int  $level
+     * @param string|int $level
+     *
      * @return int
      */
     protected function parseVerbosity($level = null)
     {
         if (isset($this->verbosityMap[$level])) {
             $level = $this->verbosityMap[$level];
-        } elseif (! is_int($level)) {
+        } elseif (!is_int($level)) {
             $level = $this->verbosity;
         }
 
@@ -551,7 +554,6 @@ abstract class Command extends SymfonyCommand
      * Set the verbosity level.
      *
      * @param string|int $level
-     * @return void
      */
     protected function setVerbosity($level)
     {
@@ -601,8 +603,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Set the Laravel application instance.
      *
-     * @param  \Interop\Container\Exception\ContainerInterface  $container
-     * @return void
+     * @param \Interop\Container\Exception\ContainerInterface $container
      */
     public function setContainer(ContainerInterface $container)
     {

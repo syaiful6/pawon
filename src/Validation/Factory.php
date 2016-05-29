@@ -67,9 +67,8 @@ class Factory implements FactoryContract
     /**
      * Create a new Validator factory instance.
      *
-     * @param  \Symfony\Component\Translation\TranslatorInterface  $translator
-     * @param  \Interop\Container\ContainerInterface  $container
-     * @return void
+     * @param \Symfony\Component\Translation\TranslatorInterface $translator
+     * @param \Interop\Container\ContainerInterface              $container
      */
     public function __construct(
         TranslatorInterface $translator,
@@ -82,10 +81,11 @@ class Factory implements FactoryContract
     /**
      * Create a new Validator instance.
      *
-     * @param  array  $data
-     * @param  array  $rules
-     * @param  array  $messages
-     * @param  array  $customAttributes
+     * @param array $data
+     * @param array $rules
+     * @param array $messages
+     * @param array $customAttributes
+     *
      * @return \App\Validation\Validator
      */
     public function make(array $data, array $rules, array $messages = [], array $customAttributes = [])
@@ -96,7 +96,7 @@ class Factory implements FactoryContract
             $validator->setPresenceVerifier($this->verifier);
         }
 
-        if (! $this->container !== null) {
+        if (!$this->container !== null) {
             $validator->setContainer($this->container);
         }
 
@@ -108,8 +108,7 @@ class Factory implements FactoryContract
     /**
      * Add the extensions to a validator instance.
      *
-     * @param  \App\Validation\Validator  $validator
-     * @return void
+     * @param \App\Validation\Validator $validator
      */
     protected function addExtensions(Validator $validator)
     {
@@ -130,10 +129,11 @@ class Factory implements FactoryContract
     /**
      * Resolve a new Validator instance.
      *
-     * @param  array  $data
-     * @param  array  $rules
-     * @param  array  $messages
-     * @param  array  $customAttributes
+     * @param array $data
+     * @param array $rules
+     * @param array $messages
+     * @param array $customAttributes
+     *
      * @return \Illuminate\Validation\Validator
      */
     protected function resolve(
@@ -142,7 +142,6 @@ class Factory implements FactoryContract
         array $messages,
         array $customAttributes
     ) {
-
         if ($this->resolver === null) {
             return new Validator($this->translator, $data, $rules, $messages, $customAttributes);
         }
@@ -153,10 +152,9 @@ class Factory implements FactoryContract
     /**
      * Register a custom validator extension.
      *
-     * @param  string  $rule
-     * @param  \Closure|string  $extension
-     * @param  string  $message
-     * @return void
+     * @param string          $rule
+     * @param \Closure|string $extension
+     * @param string          $message
      */
     public function extend($rule, $extension, $message = null)
     {
@@ -170,10 +168,9 @@ class Factory implements FactoryContract
     /**
      * Register a custom implicit validator extension.
      *
-     * @param  string   $rule
-     * @param  \Closure|string  $extension
-     * @param  string  $message
-     * @return void
+     * @param string          $rule
+     * @param \Closure|string $extension
+     * @param string          $message
      */
     public function extendImplicit($rule, $extension, $message = null)
     {
@@ -187,9 +184,8 @@ class Factory implements FactoryContract
     /**
      * Register a custom implicit validator message replacer.
      *
-     * @param  string   $rule
-     * @param  \Closure|string  $replacer
-     * @return void
+     * @param string          $rule
+     * @param \Closure|string $replacer
      */
     public function replacer($rule, $replacer)
     {
@@ -199,8 +195,7 @@ class Factory implements FactoryContract
     /**
      * Set the Validator instance resolver.
      *
-     * @param  \Closure  $resolver
-     * @return void
+     * @param \Closure $resolver
      */
     public function resolver(Closure $resolver)
     {
@@ -230,8 +225,7 @@ class Factory implements FactoryContract
     /**
      * Set the Presence Verifier implementation.
      *
-     * @param  \App\Validation\PresenceVerifierInterface  $presenceVerifier
-     * @return void
+     * @param \App\Validation\PresenceVerifierInterface $presenceVerifier
      */
     public function setPresenceVerifier(PresenceVerifierInterface $presenceVerifier)
     {

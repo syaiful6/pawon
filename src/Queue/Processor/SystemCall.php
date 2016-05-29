@@ -4,7 +4,6 @@ namespace Pawon\Queue\Processor;
 
 class SystemCall
 {
-
     protected $callback;
 
     public function __construct(callable $callback)
@@ -15,6 +14,7 @@ class SystemCall
     public function __invoke(Task $task, Scheduler $scheduler)
     {
         $callback = $this->callback;
+
         return $callback($task, $scheduler);
     }
 }

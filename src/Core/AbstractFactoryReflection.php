@@ -34,18 +34,16 @@ class AbstractFactoryReflection implements AbstractFactoryInterface
     }
 
     /**
-     * Note: Zend Service Manager catch all exception here and rethrow it
-     *
+     * Note: Zend Service Manager catch all exception here and rethrow it.
      */
     public function __invoke(
         Container $container,
         $requestedName,
         array $options = null
     ) {
-
         $reflector = new ReflectionClass($requestedName);
-        if (! $reflector->isInstantiable()) {
-            if (! empty($this->buildStack)) {
+        if (!$reflector->isInstantiable()) {
+            if (!empty($this->buildStack)) {
                 $previous = implode(', ', $this->buildStack);
 
                 $message = "Target [$requestedName] is not instantiable while "
@@ -61,7 +59,7 @@ class AbstractFactoryReflection implements AbstractFactoryInterface
         if ($constructor === null) {
             array_pop($this->buildStack);
 
-            return new $requestedName;
+            return new $requestedName();
         }
         $instances = $this->getDependencies(
             $container,
@@ -75,8 +73,9 @@ class AbstractFactoryReflection implements AbstractFactoryInterface
     /**
      * Resolve all of the dependencies from the ReflectionParameters.
      *
-     * @param  array  $parameters
-     * @param  array  $primitives
+     * @param array $parameters
+     * @param array $primitives
+     *
      * @return array
      */
     protected function getDependencies($container, array $parameters)

@@ -11,12 +11,12 @@ use function Itertools\to_array;
 class Store extends MutableMapping
 {
     /**
-     * @var boolean to indicate the session data accessed
+     * @var bool to indicate the session data accessed
      */
     private $accessed = false;
 
     /**
-     * @var boolean to indicate the entry has been modified
+     * @var bool to indicate the entry has been modified
      */
     private $modified = false;
 
@@ -26,7 +26,7 @@ class Store extends MutableMapping
     protected $backend;
 
     /**
-     * The loaded session
+     * The loaded session.
      */
     protected $attributes = [];
 
@@ -58,9 +58,9 @@ class Store extends MutableMapping
 
     /**
      * Return true if our entry modified, it mean user set new entry, unsetting
-     * the old value or replacing
+     * the old value or replacing.
      *
-     * @return boolean
+     * @return bool
      */
     public function isModified()
     {
@@ -68,9 +68,9 @@ class Store extends MutableMapping
     }
 
     /**
-     * Return true if our session data accessed
+     * Return true if our session data accessed.
      *
-     * @return boolean
+     * @return bool
      */
     public function isAccessed()
     {
@@ -78,9 +78,7 @@ class Store extends MutableMapping
     }
 
     /**
-     * Clear / empty the session data without generating new session id
-     *
-     * @return void
+     * Clear / empty the session data without generating new session id.
      */
     public function clear()
     {
@@ -88,38 +86,41 @@ class Store extends MutableMapping
     }
 
     /**
-     * Return the count of all entry in this session
+     * Return the count of all entry in this session.
      *
-     * @return integer
+     * @return int
      */
     public function count()
     {
         if (!$this->isLoaded) {
             $this->loadFromBackend();
         }
+
         return count($this->attributes);
     }
 
     /**
      * Test if this mapping contains an item (key).
      *
-     * @return boolean
+     * @return bool
      */
     public function contains($item)
     {
         if (!$this->isLoaded) {
             $this->loadFromBackend();
         }
+
         return $this->offsetExists($item);
     }
 
     /**
      * pop the session entry based the provided key, if the key exists then the
      * entry will removed and return it. If not exists the default parameter used
-     * as returned value
+     * as returned value.
      *
-     * @param mixed $key The key of the entry
+     * @param mixed $key     The key of the entry
      * @param mixed $default The default value in case the key not found in session
+     *
      * @return mixed
      */
     public function pop($key, $default = null)
@@ -128,11 +129,12 @@ class Store extends MutableMapping
             $this->loadFromBackend();
         }
         $this->modified = $this->modified || $this->contains($key);
+
         return $this->attributes->pop($key, $default);
     }
 
     /**
-     * prevent the call to our parent, this not supported
+     * prevent the call to our parent, this not supported.
      */
     public function popItem()
     {
@@ -140,7 +142,7 @@ class Store extends MutableMapping
     }
 
     /**
-     * IteratorAggregate implementation
+     * IteratorAggregate implementation.
      *
      * @return \Iterator
      */
@@ -185,6 +187,7 @@ class Store extends MutableMapping
         if (!$this->isLoaded) {
             $this->loadFromBackend();
         }
+
         return $this->attributes[$key];
     }
 
@@ -217,7 +220,7 @@ class Store extends MutableMapping
     }
 
     /**
-     * Get the session id
+     * Get the session id.
      *
      * @return string
      */
@@ -227,14 +230,13 @@ class Store extends MutableMapping
     }
 
     /**
-     * Set the sessiond id, if the id is not valid then generate the valid one
+     * Set the sessiond id, if the id is not valid then generate the valid one.
      *
      * @param mixed $id
-     * @return void
      */
     public function setId($id)
     {
-        if (! $this->isValidId($id)) {
+        if (!$this->isValidId($id)) {
             $id = $this->generateSessionId();
         }
 
@@ -243,8 +245,6 @@ class Store extends MutableMapping
 
     /**
      * Creates a new session Id, while retaining the current session data.
-     *
-     * @return void
      */
     public function cycleId()
     {
@@ -259,7 +259,8 @@ class Store extends MutableMapping
     /**
      * Determine if this is a valid session ID.
      *
-     * @param  string  $id
+     * @param string $id
+     *
      * @return bool
      */
     public function isValidId($id)
@@ -305,7 +306,7 @@ class Store extends MutableMapping
 
     /**
      * Removes the current session data from the database and regenerates the
-     * session id
+     * session id.
      */
     public function flush()
     {
@@ -340,7 +341,7 @@ class Store extends MutableMapping
     }
 
     /**
-     *  Cleanup old sessions
+     *  Cleanup old sessions.
      */
     public function gc($lifetime)
     {

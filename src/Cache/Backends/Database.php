@@ -4,7 +4,6 @@ namespace Pawon\Cache\Backends;
 
 use Closure;
 use Exception;
-use Pawon\DateTime\DateTime;
 use Illuminate\Database\ConnectionInterface as Connection;
 use Illuminate\Contracts\Encryption\Encrypter as Encrypter;
 
@@ -70,6 +69,7 @@ class Database extends BaseCache
 
                 return $default;
             }
+
             return $this->encrypter->decrypt($cache->value);
         }
 
@@ -91,6 +91,7 @@ class Database extends BaseCache
     public function add($key, $value, $version = null, $timeout = '__default__')
     {
         $key = $this->makeKey($key, $version);
+
         return $this->internalset('add', $key, $value, $version, $timeout);
     }
 
@@ -105,8 +106,6 @@ class Database extends BaseCache
 
     /**
      * Remove all items from the cache.
-     *
-     * @return void
      */
     public function clear()
     {
@@ -116,8 +115,9 @@ class Database extends BaseCache
     /**
      * Increment the value of an item in the cache.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return int|bool
      */
     public function increment($key, $delta = 1, $version = null)
@@ -135,8 +135,9 @@ class Database extends BaseCache
     /**
      * Increment the value of an item in the cache.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return int|bool
      */
     public function decrement($key, $delta = 1, $version = null)
@@ -154,9 +155,10 @@ class Database extends BaseCache
     /**
      * Increment or decrement an item in the cache.
      *
-     * @param  string  $key
-     * @param  mixed  $value
-     * @param  \Closure  $callback
+     * @param string   $key
+     * @param mixed    $value
+     * @param \Closure $callback
+     *
      * @return int|bool
      */
     protected function incrementOrDecrement($key, $delta, $version, Closure $callback)
@@ -176,7 +178,7 @@ class Database extends BaseCache
             $current = $this->encrypter->decrypt($cache->value);
             $new = $callback($current, $delta);
 
-            if (! is_numeric($current)) {
+            if (!is_numeric($current)) {
                 return false;
             }
 
@@ -217,6 +219,7 @@ class Database extends BaseCache
         } catch (Exception $e) {
             return false;
         }
+
         return true;
     }
 

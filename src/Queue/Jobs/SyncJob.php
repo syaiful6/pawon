@@ -23,9 +23,8 @@ class SyncJob extends AbstractJob implements Job
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Container\Container  $container
-     * @param  string  $payload
-     * @return void
+     * @param \Illuminate\Container\Container $container
+     * @param string                          $payload
      */
     public function __construct(Container $container, $payload)
     {
@@ -35,8 +34,6 @@ class SyncJob extends AbstractJob implements Job
 
     /**
      * Fire the job.
-     *
-     * @return void
      */
     public function fire()
     {
@@ -56,8 +53,7 @@ class SyncJob extends AbstractJob implements Job
     /**
      * Release the job back into the queue.
      *
-     * @param  int   $delay
-     * @return void
+     * @param int $delay
      */
     public function release($delay = 0)
     {

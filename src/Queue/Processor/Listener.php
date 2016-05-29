@@ -84,8 +84,9 @@ class Listener
     /**
      * Get the next job from the queue connection.
      *
-     * @param  \Illuminate\Contracts\Queue\Queue  $connection
-     * @param  string  $queue
+     * @param \Illuminate\Contracts\Queue\Queue $connection
+     * @param string                            $queue
+     *
      * @return \Illuminate\Contracts\Queue\Job|null
      */
     protected function getNextJob($connection, $queue)
@@ -95,19 +96,20 @@ class Listener
         }
 
         foreach (explode(',', $queue) as $queue) {
-            if (! is_null($job = $connection->pop($queue))) {
+            if (!is_null($job = $connection->pop($queue))) {
                 return $job;
             }
         }
     }
 
-     /**
+    /**
      * Process a given job from the queue.
      *
-     * @param  string  $connection
-     * @param  \Illuminate\Contracts\Queue\Job  $job
-     * @param  int  $maxTries
-     * @param  int  $delay
+     * @param string                          $connection
+     * @param \Illuminate\Contracts\Queue\Job $job
+     * @param int                             $maxTries
+     * @param int                             $delay
+     *
      * @return array|null
      *
      * @throws \Throwable
@@ -116,6 +118,7 @@ class Listener
     {
         if ($this->maxTries > 0 && $job->attempts() > $this->maxTries) {
             yield $this->logFailedJob($connection, $job);
+
             return;
         }
 
@@ -124,7 +127,7 @@ class Listener
 
             yield ['job' => $job, 'failed' => false];
         } finally {
-            if (! $job->isDeleted()) {
+            if (!$job->isDeleted()) {
                 yield $job->release($delay);
             }
         }
@@ -157,7 +160,8 @@ class Listener
     /**
      * Determine if the memory limit has been exceeded.
      *
-     * @param  int   $memoryLimit
+     * @param int $memoryLimit
+     *
      * @return bool
      */
     public function memoryExceeded($memoryLimit)
@@ -168,8 +172,9 @@ class Listener
     /**
      * Log a failed job into storage.
      *
-     * @param  string  $connection
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param string                          $connection
+     * @param \Illuminate\Contracts\Queue\Job $job
+     *
      * @return array
      */
     protected function logFailedJob($connection, Job $job)
@@ -198,8 +203,7 @@ class Listener
     /**
      * Set the amount of seconds to wait before polling the queue.
      *
-     * @param  int  $sleep
-     * @return void
+     * @param int $sleep
      */
     public function setSleep($sleep)
     {
@@ -209,8 +213,7 @@ class Listener
     /**
      * Set the amount of times to try a job before logging it failed.
      *
-     * @param  int  $tries
-     * @return void
+     * @param int $tries
      */
     public function setMaxTries($tries)
     {

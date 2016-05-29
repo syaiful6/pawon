@@ -39,6 +39,7 @@ class Scheduler
         $task = new Task($tid, $coroutine);
         $this->taskMap[$tid] = $task;
         $this->schedule($task);
+
         return $tid;
     }
 
@@ -76,7 +77,6 @@ class Scheduler
      */
     public function run()
     {
-
         while (!$this->queue->isEmpty()) {
             $task = $this->queue->dequeue();
             $retval = $task->run();

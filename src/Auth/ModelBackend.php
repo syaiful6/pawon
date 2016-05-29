@@ -56,11 +56,12 @@ class ModelBackend implements AuthBackend
         } catch (ModelNotFoundException $e) {
             return;
         }
+
         return $this->userCanAuthenticate($user) ? $user : null;
     }
 
     /**
-     * Reject user with is_active=false
+     * Reject user with is_active=false.
      */
     protected function userCanAuthenticate($user)
     {
@@ -92,6 +93,6 @@ class ModelBackend implements AuthBackend
     {
         $class = '\\'.ltrim($this->model, '\\');
 
-        return new $class;
+        return new $class();
     }
 }

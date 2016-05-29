@@ -3,7 +3,6 @@
 namespace Pawon\Contrib\Http;
 
 use RuntimeException;
-use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
@@ -41,7 +40,7 @@ trait ValidateRequest
     }
 
     /**
-     * Return \Illuminate\Contracts\Validation\Factory|false
+     * Return \Illuminate\Contracts\Validation\Factory|false.
      */
     protected function getValidationFactory()
     {

@@ -16,8 +16,7 @@ class QueueClosure
     /**
      * Create a new queued Closure job.
      *
-     * @param  \Illuminate\Contracts\Encryption\Encrypter  $crypt
-     * @return void
+     * @param \Illuminate\Contracts\Encryption\Encrypter $crypt
      */
     public function __construct(EncrypterContract $crypt)
     {
@@ -27,9 +26,8 @@ class QueueClosure
     /**
      * Fire the Closure based queue job.
      *
-     * @param  \Illuminate\Contracts\Queue\Job  $job
-     * @param  array  $data
-     * @return void
+     * @param \Illuminate\Contracts\Queue\Job $job
+     * @param array                           $data
      */
     public function __invoke($job, $data)
     {

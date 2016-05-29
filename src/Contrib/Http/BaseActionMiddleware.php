@@ -7,8 +7,6 @@ use Pawon\Http\Middleware\MiddlewareInterface;
 use Pawon\Contrib\Bus\CommandBusAwareInterface;
 use Pawon\Validation\ValidatorFactoryAwareInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Illuminate\Contracts\Validation\Factory as FactoryContract;
 
 abstract class BaseActionMiddleware implements

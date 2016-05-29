@@ -5,14 +5,14 @@ namespace Pawon\Cookie;
 class CookieJar implements QueueingCookieFactory
 {
     /**
-     * The default path
+     * The default path.
      *
      * @var string
      */
     protected $path;
 
     /**
-     * The default domain
+     * The default domain.
      */
     protected $domain;
 
@@ -27,7 +27,7 @@ class CookieJar implements QueueingCookieFactory
     protected $httpOnly = false;
 
     /**
-     * The cookies
+     * The cookies.
      *
      * @var App\Cookie\Cookie
      */
@@ -52,6 +52,7 @@ class CookieJar implements QueueingCookieFactory
 
         $output = $this->cookies->getOutput(null, '', '');
         $this->cookies = $oldCookie;
+
         return ltrim($output);
     }
 
@@ -131,10 +132,11 @@ class CookieJar implements QueueingCookieFactory
     /**
      * Get the path and domain, or the default values.
      *
-     * @param  string  $path
-     * @param  string  $domain
-     * @param  bool    $secure
-     * @param  bool    $httpOnly
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
+     *
      * @return array
      */
     protected function getCookieTails($path, $domain, $secure = false, $httpOnly = false)
@@ -143,16 +145,17 @@ class CookieJar implements QueueingCookieFactory
             $path ?: $this->path,
             $domain ?: $this->domain,
             $secure ?: $this->secure,
-            $httpOnly ?: $this->httpOnly
+            $httpOnly ?: $this->httpOnly,
         ];
     }
 
     /**
      * Set the default path and domain for the jar.
      *
-     * @param  string  $path
-     * @param  string  $domain
-     * @param  bool    $secure
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     *
      * @return $this
      */
     public function setDefaultCookieTails($path, $domain, $secure = false, $httpOnly = false)
@@ -178,6 +181,7 @@ class CookieJar implements QueueingCookieFactory
         foreach ($this->cookies->values() as $cookie) {
             array_push($out, $cookie->getOutput(null, ''));
         }
+
         return $out;
     }
 }

@@ -17,7 +17,7 @@ class Message implements Serializable
         FlashMessageInterface::INFO => 'info',
         FlashMessageInterface::SUCCESS => 'success',
         FlashMessageInterface::WARNING => 'warning',
-        FlashMessageInterface::ERROR => 'error'
+        FlashMessageInterface::ERROR => 'error',
     ];
 
     /**
@@ -55,12 +55,13 @@ class Message implements Serializable
     {
         $extraTag = $this->extraTag;
         if ($extraTag && $this->levelTag()) {
-            return join(' ', [$extraTag, $this->levelTag()]);
+            return implode(' ', [$extraTag, $this->levelTag()]);
         } elseif ($extraTag) {
             return $extraTag;
         } elseif ($this->levelTag) {
             return $this->levelTag();
         }
+
         return '';
     }
 

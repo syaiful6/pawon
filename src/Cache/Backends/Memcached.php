@@ -35,12 +35,14 @@ class Memcached extends BaseCache
         if ($timeout > 2592000) {
             $timeout += time();
         }
+
         return (int) $timeout;
     }
 
     public function add($key, $value, $version = null, $timeout = '__default__')
     {
         $key = $this->makeKey($key, $version);
+
         return $this->memcached->add($key, $value, $this->getBackendTimeout($timeout));
     }
 
@@ -54,6 +56,7 @@ class Memcached extends BaseCache
         if ($this->memcached->getResultCode() == 0) {
             return $val;
         }
+
         return $default;
     }
 

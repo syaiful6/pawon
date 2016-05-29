@@ -9,8 +9,9 @@ interface AuthBackend
      * if support credentials but can't find the user.
      *
      * @throws Pawon\Auth\Exceptions\NotSupportedCredentials if not supported params
-     * @throws Pawon\Auth\Exceptions\PermissionDenied if this user should not allowed
-     *         in at all. Eg, they are blacklist
+     * @throws Pawon\Auth\Exceptions\PermissionDenied        if this user should not allowed
+     *                                                       in at all. Eg, they are blacklist
+     *
      * @return Pawon\User\Model|null
      */
     public function authenticate(array $credentials);
@@ -19,6 +20,7 @@ interface AuthBackend
      * Get the user model by their unique identifiers.
      *
      * @param mixin $id
+     *
      * @return Pawon\User\Model|null
      */
     public function getUser($id);

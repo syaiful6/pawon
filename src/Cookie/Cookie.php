@@ -119,7 +119,7 @@ REGEX;
                     }
                 } elseif (in_array(strtolower($key), $reserverd)) {
                     if ($morshel) {
-                        if (! $val) {
+                        if (!$val) {
                             if (in_array(strtolower($key), $flags)) {
                                 $morshel[$key] = true;
                             }

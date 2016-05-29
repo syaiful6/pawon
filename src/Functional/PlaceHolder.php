@@ -3,7 +3,7 @@
 namespace Pawon\Functional;
 
 /**
- * Just a litle help to mark the parameter is placeholder
+ * Just a litle help to mark the parameter is placeholder.
  */
 class PlaceHolder
 {
@@ -14,8 +14,8 @@ class PlaceHolder
     }
 
     /**
-    *
-    */
+     *
+     */
     public function create()
     {
         if (static::$instance === null) {

@@ -69,13 +69,14 @@ class QueueServiceFactory
 
         if (isset($failed['table'])) {
             $db = $container->get(DBConnection::class);
+
             return new Failed\DatabaseFailedJobProvider(
                 $db,
                 $failed['database'],
                 $failed['table']
             );
         } else {
-            return new Failed\NullFailedJobProvider;
+            return new Failed\NullFailedJobProvider();
         }
     }
 
@@ -91,9 +92,7 @@ class QueueServiceFactory
     }
 
     /** Register the connectors on the queue manager.
-     *
-     * @param  \Illuminate\Queue\QueueManager  $manager
-     * @return void
+     * @param \Illuminate\Queue\QueueManager $manager
      */
     public function registerConnectors($factory, $container)
     {
@@ -105,39 +104,37 @@ class QueueServiceFactory
     /**
      * Register the Sync queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
-     * @return void
+     * @param \Illuminate\Queue\QueueManager $manager
      */
     protected function registerSyncConnector($factory, $container)
     {
         $factory->addConnector('sync', function () {
-            return new Connectors\SyncConnector;
+            return new Connectors\SyncConnector();
         });
     }
 
     /**
      * Register the Beanstalkd queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
-     * @return void
+     * @param \Illuminate\Queue\QueueManager $manager
      */
     protected function registerBeanstalkdConnector($factory, $container)
     {
         $factory->addConnector('beanstalkd', function () {
-            return new Connectors\BeanstalkdConnector;
+            return new Connectors\BeanstalkdConnector();
         });
     }
 
     /**
      * Register the database queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
-     * @return void
+     * @param \Illuminate\Queue\QueueManager $manager
      */
     protected function registerDatabaseConnector($factory, $container)
     {
         $factory->addConnector('database', function () use ($container) {
             $db = $container->get(DBConnection::class);
+
             return new Connectors\DatabaseConnector($db);
         });
     }

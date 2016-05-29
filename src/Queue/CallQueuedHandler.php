@@ -23,9 +23,8 @@ class CallQueuedHandler
     /**
      * Handle the queued job.
      *
-     * @param  \Illuminate\Contracts\Queue\Job  $job
-     * @param  array  $data
-     * @return void
+     * @param \Illuminate\Contracts\Queue\Job $job
+     * @param array                           $data
      */
     public function __invoke(Job $job, array $data)
     {
@@ -36,7 +35,7 @@ class CallQueuedHandler
 
         $this->command->handle($command);
 
-        if (! $job->isDeletedOrReleased()) {
+        if (!$job->isDeletedOrReleased()) {
             $job->delete();
         }
     }
@@ -44,8 +43,9 @@ class CallQueuedHandler
     /**
      * Set the job instance of the given class if necessary.
      *
-     * @param  \Illuminate\Contracts\Queue\Job  $job
-     * @param  mixed  $instance
+     * @param \Illuminate\Contracts\Queue\Job $job
+     * @param mixed                           $instance
+     *
      * @return mixed
      */
     protected function setJobInstanceIfNecessary(Job $job, $instance)
@@ -60,8 +60,7 @@ class CallQueuedHandler
     /**
      * Call the failed method on the job instance.
      *
-     * @param  array  $data
-     * @return void
+     * @param array $data
      */
     public function failed(array $data)
     {

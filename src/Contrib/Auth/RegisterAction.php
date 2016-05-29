@@ -38,6 +38,7 @@ class RegisterAction extends BaseActionMiddleware
     {
         return function () use ($request) {
             $user = $request->getAttribute('user');
+
             return $user && !$user->isAuthenticate();
         };
     }
@@ -64,11 +65,11 @@ class RegisterAction extends BaseActionMiddleware
     public function get(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/register', [
-            'error' => new MessageBag()
+            'error' => new MessageBag(),
         ]);
 
         return $frame->getResponseFactory()->make($html, 200, [
-            'Content-Type' => 'text/html'
+            'Content-Type' => 'text/html',
         ]);
     }
 
@@ -87,16 +88,16 @@ class RegisterAction extends BaseActionMiddleware
     }
 
     /**
-     * render with errors
+     * render with errors.
      */
     protected function formInvalid(Request $request, FrameInterface $frame)
     {
         $html = $this->renderer->render('app::auth/register', [
-            'error' => $this->validator->errors()
+            'error' => $this->validator->errors(),
         ]);
 
         return $frame->getResponseFactory()->make($html, 200, [
-            'Content-Type' => 'text/html'
+            'Content-Type' => 'text/html',
         ]);
     }
 
@@ -113,7 +114,7 @@ class RegisterAction extends BaseActionMiddleware
         }
 
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => '/'
+            'location' => '/',
         ]);
     }
 
@@ -122,7 +123,7 @@ class RegisterAction extends BaseActionMiddleware
      */
     protected function create($input)
     {
-        $user = new User;
+        $user = new User();
         $user->name = $input['name'];
         $user->email = $input['email'];
         $user->date_joined = DateTime::now();
@@ -140,7 +141,7 @@ class RegisterAction extends BaseActionMiddleware
         return $this->isValid($request, [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed'
+            'password' => 'required|min:6|confirmed',
         ]);
     }
 }

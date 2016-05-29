@@ -6,9 +6,9 @@ use Headbanger\Set;
 use Headbanger\BaseSet;
 use Headbanger\ArrayList;
 use Illuminate\Support\Str;
-use Itertools\StopIteration;
 use Pawon\Functional\PlaceHolder;
 use Pawon\Functional\Singledispatch;
+use Pawon\Functional\Curry;
 use Pawon\Core\ServiceManagerProxy;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -18,8 +18,9 @@ use function Itertools\map;
 /**
  * Gets the value of an environment variable. Supports boolean, empty and null.
  *
- * @param  string  $key
- * @param  mixed   $default
+ * @param string $key
+ * @param mixed  $default
+ *
  * @return mixed
  */
 function env($key, $default = null)
@@ -104,7 +105,8 @@ function invoke($toCall, ...$args)
 }
 
 /**
- * Partial application
+ * Partial application, they just produce a function (closure in our implementation)
+ * that take fewer argument than the original.
  */
 function partial($fn, ...$args)
 {
@@ -114,13 +116,49 @@ function partial($fn, ...$args)
 }
 
 /**
-*
-*/
+ *
+ */
 function partial_right($fn, ...$args)
 {
     return function (...$params) use ($fn, $args) {
         return $fn(...merge_right_params($args, $params));
     };
+}
+
+/**
+ *
+ */
+function curry(callable $fn, ...$args)
+{
+    return new Curry($fn, ...$args);
+}
+
+/**
+ *
+ */
+function arity(callable $callable)
+{
+    if (is_object($callable)) {
+        $r = new \ReflectionMethod($callable, '__invoke');
+
+        return $r->getNumberOfRequiredParameters();
+    }
+
+    if (is_string($callable)
+        && preg_match('/^(?P<class>[^:]+)::(?P<method>.*)$/', $callable, $matches)
+    ) {
+        $callable = [$matches['class'], $matches['method']];
+    }
+
+    if (is_array($callable)) {
+        $r = new \ReflectionMethod($callable[0], $callable[1]);
+
+        return $r->getNumberOfRequiredParameters();
+    }
+
+    $r = new \ReflectionFunction($callable);
+
+    return $r->getNumberOfRequiredParameters();
 }
 
 /**
@@ -132,7 +170,7 @@ function single_dispatch(callable $fn)
 }
 
 /**
- * Mark the parameter as placeholder
+ * Mark the parameter as placeholder.
  */
 function _()
 {
@@ -145,6 +183,7 @@ function _()
 function merge_left_params($left, $right)
 {
     resolve_placeholder($left, $right);
+
     return array_merge($left, $right);
 }
 
@@ -154,6 +193,7 @@ function merge_left_params($left, $right)
 function merge_right_params($left, $right)
 {
     resolve_placeholder($left, $right);
+
     return array_merge($right, $left);
 }
 
@@ -175,7 +215,7 @@ function resolve_placeholder(array &$parameters, array &$source)
 }
 
 /**
- * Return a random int in the range [0,n]
+ * Return a random int in the range [0,n].
  */
 function random_below($n)
 {
@@ -247,7 +287,7 @@ function random_sample($population, $k)
     }
 
     $n = count($population);
-    if (! (0 <= $k && $k <= $n)) {
+    if (!(0 <= $k && $k <= $n)) {
         throw new \LogicException('Sample larger than population');
     }
     $generator = unique_everseen(random_sequence($n));
@@ -270,5 +310,6 @@ function urlsafe_base64_encode($s)
 function urlsafe_base64_decode($s)
 {
     $padded = $s.str_repeat('=', strlen($s) % 4);
+
     return base64_decode(strtr($padded, '-_', '+/'));
 }

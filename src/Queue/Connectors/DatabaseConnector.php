@@ -18,8 +18,7 @@ class DatabaseConnector implements Connector
     /**
      * Create a new connector instance.
      *
-     * @param  \Illuminate\Database\ConnectionResolverInterface  $connections
-     * @return void
+     * @param \Illuminate\Database\ConnectionResolverInterface $connections
      */
     public function __construct(ConnectionResolverInterface $connections)
     {
@@ -29,7 +28,8 @@ class DatabaseConnector implements Connector
     /**
      * Establish a queue connection.
      *
-     * @param  array  $config
+     * @param array $config
+     *
      * @return \Illuminate\Contracts\Queue\Queue
      */
     public function connect(array $config)

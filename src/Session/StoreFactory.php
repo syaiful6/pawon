@@ -19,7 +19,8 @@ class StoreFactory
 
         $config = $container->has('config') ? $container->get('config') : [];
         $setting = isset($config['session']) ? $config['session'] : [];
-        $name   = isset($setting['cookie']) ? $setting['cookie'] : 'expressive-session';
+        $name = isset($setting['cookie']) ? $setting['cookie'] : 'expressive-session';
+
         return new Store($name, $backend);
     }
 }

@@ -88,6 +88,7 @@ class GenericMiddlewareFactory
         }, $processors);
         if ($container->has(TemplateRendererInterface::class)) {
             $renderer = $container->get(TemplateRendererInterface::class);
+
             return new ContextProcessor($renderer, $processors);
         }
         throw new \RuntimeException(sprintf(

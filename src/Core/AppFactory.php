@@ -3,14 +3,12 @@
 namespace Pawon\Core;
 
 use SplPriorityQueue;
-use Zend\Expressive\Exception;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\FastRouteRouter;
 use Pawon\Http\Exceptions\HttpException;
 use Pawon\Http\ResponseFactoryInterface;
 use Pawon\Http\Middleware\MiddlewarePipe;
-use Pawon\Http\Middleware\CallableMiddleware;
 use Pawon\Http\Middleware\MiddlewareInterface;
 use Interop\Container\ContainerInterface;
 
@@ -65,6 +63,7 @@ class AppFactory
         foreach ($queue as $spec) {
             $app->pipe($spec['middleware']);
         }
+
         return $injections;
     }
 
@@ -74,13 +73,13 @@ class AppFactory
     private function injectRoutes(array $routes, Application $app)
     {
         foreach ($routes as $spec) {
-            if (! isset($spec['path']) || ! isset($spec['middleware'])) {
+            if (!isset($spec['path']) || !isset($spec['middleware'])) {
                 continue;
             }
 
             if (isset($spec['allowed_methods'])) {
                 $methods = $spec['allowed_methods'];
-                if (! is_array($methods)) {
+                if (!is_array($methods)) {
                     throw new Exceptions\ImproperlyConfigured(sprintf(
                         'Allowed HTTP methods for a route must be in form of an array; received "%s"',
                         gettype($methods)
@@ -89,12 +88,12 @@ class AppFactory
             } else {
                 $methods = Route::HTTP_METHOD_ANY;
             }
-            $name    = isset($spec['name']) ? $spec['name'] : null;
-            $route   = new Route($spec['path'], $spec['middleware'], $methods, $name);
+            $name = isset($spec['name']) ? $spec['name'] : null;
+            $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
-                if (! is_array($options)) {
+                if (!is_array($options)) {
                     throw new Exceptions\ImproperlyConfigured(sprintf(
                         'Route options must be an array; received "%s"',
                         gettype($options)
@@ -114,15 +113,15 @@ class AppFactory
     private function createCollectionMapper($container)
     {
         return function ($item) use ($container) {
-            if (! is_array($item) || ! array_key_exists('middleware', $item)) {
+            if (!is_array($item) || !array_key_exists('middleware', $item)) {
                 throw new Exceptions\ImproperlyConfigured(sprintf(
                     'Invalid pipeline specification received; must be an array containing a middleware '
-                    . 'key, or one of the ApplicationFactory::*_MIDDLEWARE constants; received %s',
+                    .'key, or one of the ApplicationFactory::*_MIDDLEWARE constants; received %s',
                     (is_object($item) ? get_class($item) : gettype($item))
                 ));
             }
 
-            if (! is_callable($item['middleware']) && is_array($item['middleware'])) {
+            if (!is_callable($item['middleware']) && is_array($item['middleware'])) {
                 $middleware = array_map($this->mapMiddlewareStack($container), $item['middleware']);
                 $item['middleware'] = new MiddlewarePipe($middleware);
             }
@@ -131,7 +130,7 @@ class AppFactory
         };
     }
 
-     /**
+    /**
      *
      */
     protected function mapMiddlewareStack($container)
@@ -162,11 +161,13 @@ class AppFactory
         // $serial is used to ensure that items of the same priority are enqueued
         // in the order in which they are inserted.
         $serial = PHP_INT_MAX;
+
         return function ($queue, $item) use (&$serial) {
             $priority = isset($item['priority']) && is_int($item['priority'])
                 ? $item['priority']
                 : 1;
             $queue->insert($item, [$priority, $serial--]);
+
             return $queue;
         };
     }

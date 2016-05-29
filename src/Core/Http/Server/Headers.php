@@ -147,7 +147,7 @@ class Headers implements Countable, ArrayAccess
         $parts = [];
         foreach ($params as $k => $v) {
             $rem = str_replace('_', '-', $k);
-            if (! $v) {
+            if (!$v) {
                 $parts[] = $rem;
             } else {
                 $parts[] = $this->formatParam($rem, $v);

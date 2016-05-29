@@ -1,6 +1,6 @@
 <?php
 
-namespace Pawon\Tests;
+namespace Pawon\tests;
 
 use PHPUnit_Framework_TestCase;
 use function Pawon\random_sample;
@@ -17,7 +17,7 @@ class RandomHelperTest extends PHPUnit_Framework_TestCase
             'foo',
             'bar',
             'baz',
-            'daz'
+            'daz',
         ];
 
         $choosen = random_choice($data);

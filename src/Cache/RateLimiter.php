@@ -12,7 +12,7 @@ class RateLimiter
     protected $cache;
 
     /**
-     * Create new RateLimiter
+     * Create new RateLimiter.
      *
      * @param Pawon\Cache\Backends\BaseCache $cache
      */
@@ -45,13 +45,15 @@ class RateLimiter
     public function hit($key, $version = null, $timeout = 60)
     {
         $this->cache->add($key, 1, $version, $timeout);
+
         return $this->cache->increment($key, 1, $version);
     }
 
     /**
      * Get the number of attempts for the given key.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function attempts($key, $version = null)
@@ -62,21 +64,22 @@ class RateLimiter
     /**
      * Get the number of retries left for the given key.
      *
-     * @param  string  $key
-     * @param  int  $maxAttempts
+     * @param string $key
+     * @param int    $maxAttempts
+     *
      * @return int
      */
     public function retriesLeft($key, $maxAttempts, $version = null)
     {
         $attempts = $this->attempts($key, $version);
+
         return $attempts === 0 ? $maxAttempts : $maxAttempts - $attempts + 1;
     }
 
     /**
      * Clear the hits and lockout for the given key.
      *
-     * @param  string  $key
-     * @return void
+     * @param string $key
      */
     public function clear($key, $version = null)
     {
@@ -88,7 +91,8 @@ class RateLimiter
     /**
      * Get the number of seconds until the "key" is accessible again.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return int
      */
     public function availableIn($key, $version = null)

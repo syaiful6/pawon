@@ -3,7 +3,6 @@
 namespace Pawon\Middleware;
 
 use Headbanger\Set;
-use OutOfBoundsException;
 use Zend\Diactoros\Uri;
 use Illuminate\Support\Str;
 use Pawon\Cookie\CookieFactory;
@@ -26,12 +25,12 @@ class Csrf implements MiddlewareInterface
     protected $cookiejar;
 
     /**
-     * @var boolean To indicate the csrf token used by the template
+     * @var bool To indicate the csrf token used by the template
      */
     protected $csrfTokenUsed = false;
 
     /**
-     * @var boolean to signal that token should rotate/create new token
+     * @var bool to signal that token should rotate/create new token
      */
     protected $shouldRotate = false;
 
@@ -41,8 +40,8 @@ class Csrf implements MiddlewareInterface
     protected $configs;
 
     /**
-    *
-    */
+     *
+     */
     public function __construct(CookieFactory $cookiejar, array $configs)
     {
         $this->cookiejar = $cookiejar;
@@ -78,7 +77,7 @@ class Csrf implements MiddlewareInterface
         // only check if the request method is not "safe"
         if (!in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE'])) {
             if ($request->getAttribute('DONT_ENFORCE_CSRF_CHECK', false)) {
-                /**
+                /*
                  * Mechanism to turn off CSRF checks for test suite.
                  */
                 return $frame->next($request);
@@ -101,6 +100,7 @@ class Csrf implements MiddlewareInterface
                         $referer,
                         $goodReferrer
                     );
+
                     return $this->rejectRequest($reason);
                 }
             }
@@ -118,7 +118,7 @@ class Csrf implements MiddlewareInterface
             if ($requestcsrftoken === '') {
                 $requestcsrftoken = $request->getHeader('X-CSRFTOKEN');
             }
-            if (! $this->compareCsrfToken($requestcsrftoken, $csrftoken)) {
+            if (!$this->compareCsrfToken($requestcsrftoken, $csrftoken)) {
                 return $this->rejectRequest(
                     'CSRF token missing or incorrect.'
                 );
@@ -131,7 +131,7 @@ class Csrf implements MiddlewareInterface
         // we need to save the token
         $response = $frame->next($request);
         // not used, maybe there are no form on the template
-        if (! $this->csrfTokenUsed) {
+        if (!$this->csrfTokenUsed) {
             return $response;
         }
         $response = $this->addCookieToResponse($csrftoken, $response);
@@ -140,7 +140,7 @@ class Csrf implements MiddlewareInterface
     }
 
     /**
-     * Add cookie to response so it's easier for our frontend developer
+     * Add cookie to response so it's easier for our frontend developer.
      */
     protected function addCookieToResponse($csrftoken, Response $response)
     {
@@ -175,10 +175,11 @@ class Csrf implements MiddlewareInterface
         }
 
         $set = new Set(array_map('strtolower', $vary));
-        $newAdded = array_filter(['cookie', ], function ($item) use ($set) {
-            return ! $set->contains($item);
+        $newAdded = array_filter(['cookie'], function ($item) use ($set) {
+            return !$set->contains($item);
         });
-        $vary = join(', ', array_merge($vary, $newAdded));
+        $vary = implode(', ', array_merge($vary, $newAdded));
+
         return $response->withHeader('Vary', $vary);
     }
 
@@ -187,7 +188,7 @@ class Csrf implements MiddlewareInterface
      */
     protected function compareCsrfToken($token1, $token2)
     {
-        if (! is_string($token1) || ! is_string($token2)) {
+        if (!is_string($token1) || !is_string($token2)) {
             return false;
         }
 
@@ -202,9 +203,9 @@ class Csrf implements MiddlewareInterface
         list($uri1, $uri2) = [new Uri($uri1), new Uri($uri2)];
 
         $o1 = [$uri1->getScheme(), $uri1->getHost(),
-            $uri1->getPort() ?: $this->protocolToPort($uri1->getScheme($uri1->getScheme()))];
+            $uri1->getPort() ?: $this->protocolToPort($uri1->getScheme($uri1->getScheme())), ];
         $o2 = [$uri2->getScheme(), $uri2->getHost(),
-            $uri2->getPort() ?: $this->protocolToPort($uri1->getScheme($uri2->getScheme()))];
+            $uri2->getPort() ?: $this->protocolToPort($uri1->getScheme($uri2->getScheme())), ];
 
         return $o1 === $o2;
     }
@@ -218,6 +219,7 @@ class Csrf implements MiddlewareInterface
             'http' => 80,
             'https' => 443,
         ];
+
         return $map[$protocol];
     }
 
@@ -235,6 +237,7 @@ class Csrf implements MiddlewareInterface
     public function getToken(Request $request)
     {
         $this->csrfTokenUsed = true;
+
         return $request->getAttribute('CSRF_COOKIE');
     }
 

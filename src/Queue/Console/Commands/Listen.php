@@ -34,8 +34,7 @@ class Listen extends Command
     /**
      * Create a new queue listen command.
      *
-     * @param  \Illuminate\Queue\Listener  $listener
-     * @return void
+     * @param \Illuminate\Queue\Listener $listener
      */
     public function __construct(Listener $listener)
     {
@@ -46,8 +45,6 @@ class Listen extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function fire()
     {
@@ -72,7 +69,8 @@ class Listen extends Command
     /**
      * Get the name of the queue connection to listen on.
      *
-     * @param  string  $connection
+     * @param string $connection
+     *
      * @return string
      */
     protected function getQueue($connection)
@@ -90,8 +88,6 @@ class Listen extends Command
 
     /**
      * Set the options on the queue listener.
-     *
-     * @return void
      */
     protected function setListenerOptions()
     {

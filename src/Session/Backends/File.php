@@ -8,10 +8,10 @@ use Symfony\Component\Finder\Finder;
 class File implements SessionBackendInterface
 {
     /**
-    * path to write the session
-    *
-    * @var string
-    */
+     * path to write the session.
+     *
+     * @var string
+     */
     private $path;
 
     protected $prefix = 'expressive-session-';
@@ -68,7 +68,7 @@ class File implements SessionBackendInterface
         file_put_contents($this->sessionIdToFile($sessionId), $data, LOCK_EX);
     }
 
-     /**
+    /**
      * {@inheritdoc}
      */
     public function destroy($sessionId)

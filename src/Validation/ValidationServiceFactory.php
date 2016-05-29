@@ -40,6 +40,7 @@ class ValidationServiceFactory
                 $presence = $container->get(PresenceVerifierInterface::class);
                 $factory->setPresenceVerifier($presence);
             }
+
             return $factory;
         }
 

@@ -3,9 +3,7 @@
 namespace Pawon\Auth\Password;
 
 use Closure;
-use Illuminate\Support\Arr;
 use UnexpectedValueException;
-use Pawon\Auth\Authenticator;
 use Illuminate\Contracts\Mail\Mailer as MailerContract;
 use Illuminate\Contracts\Auth\PasswordBroker as PasswordBrokerContract;
 use function Pawon\urlsafe_base64_encode;
@@ -33,7 +31,7 @@ class PasswordBroker implements PasswordBrokerContract
     protected $passwordValidator;
 
     /**
-     * The eloquent model, only need to define getEmail
+     * The eloquent model, only need to define getEmail.
      */
     protected $model;
 
@@ -55,15 +53,16 @@ class PasswordBroker implements PasswordBrokerContract
     /**
      * Send a password reset link to a user.
      *
-     * @param  array  $credentials
-     * @param  \Closure|null  $callback
+     * @param array         $credentials
+     * @param \Closure|null $callback
+     *
      * @return string
      */
     public function sendResetLink(array $credentials, Closure $callback = null)
     {
         $user = $this->getUser($credentials);
 
-        if (! $user) {
+        if (!$user) {
             return PasswordBrokerContract::INVALID_USER;
         }
 
@@ -76,14 +75,15 @@ class PasswordBroker implements PasswordBrokerContract
     /**
      * Send the password reset link via e-mail.
      *
-     * @param  The model  $user
-     * @param  string  $token
-     * @param  \Closure|null  $callback
+     * @param The model     $user
+     * @param string        $token
+     * @param \Closure|null $callback
+     *
      * @return int
      */
     public function emailResetLink($user, $token, Closure $callback = null)
     {
-        if (! method_exists($user, 'getEmail') || ! is_callable([$user, 'getEmail'])) {
+        if (!method_exists($user, 'getEmail') || !is_callable([$user, 'getEmail'])) {
             throw new \RuntimeException('The user model need to define getEmail');
         }
 
@@ -132,10 +132,10 @@ class PasswordBroker implements PasswordBrokerContract
         if (($user = $this->getUser($credentials)) === null) {
             return PasswordBrokerContract::INVALID_USER;
         }
-        if (! $this->validateNewPassword($credentials)) {
+        if (!$this->validateNewPassword($credentials)) {
             return PasswordBrokerContract::INVALID_PASSWORD;
         }
-        if (! $this->repository->exists($user, $credentials['token'])) {
+        if (!$this->repository->exists($user, $credentials['token'])) {
             return PasswordBrokerContract::INVALID_TOKEN;
         }
 
@@ -145,8 +145,7 @@ class PasswordBroker implements PasswordBrokerContract
     /**
      * Set a custom password validator.
      *
-     * @param  \Closure  $callback
-     * @return void
+     * @param \Closure $callback
      */
     public function validator(Closure $callback)
     {
@@ -156,7 +155,8 @@ class PasswordBroker implements PasswordBrokerContract
     /**
      * Determine if the passwords match for the request.
      *
-     * @param  array  $credentials
+     * @param array $credentials
+     *
      * @return bool
      */
     public function validateNewPassword(array $credentials)
@@ -179,7 +179,8 @@ class PasswordBroker implements PasswordBrokerContract
     /**
      * Determine if the passwords are valid for the request.
      *
-     * @param  array  $credentials
+     * @param array $credentials
+     *
      * @return bool
      */
     protected function validatePasswordWithDefaults(array $credentials)
@@ -239,6 +240,6 @@ class PasswordBroker implements PasswordBrokerContract
     {
         $class = '\\'.ltrim($this->model, '\\');
 
-        return new $class;
+        return new $class();
     }
 }

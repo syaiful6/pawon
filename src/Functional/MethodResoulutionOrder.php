@@ -2,11 +2,8 @@
 
 namespace Pawon\Functional;
 
-use ReflectionClass;
-
 trait MethodResoulutionOrder
 {
-
     protected $registry = [];
 
     protected $cache;
@@ -41,6 +38,7 @@ trait MethodResoulutionOrder
         if ($match === null) {
             return;
         }
+
         return $this->registry[$match];
     }
 }

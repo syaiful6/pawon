@@ -25,8 +25,6 @@ trait InteractsWithQueue
 
     /**
      * Delete the job from the queue.
-     *
-     * @return void
      */
     public function delete()
     {
@@ -37,8 +35,6 @@ trait InteractsWithQueue
 
     /**
      * Fail the job from the queue.
-     *
-     * @return void
      */
     public function failed()
     {
@@ -50,8 +46,7 @@ trait InteractsWithQueue
     /**
      * Release the job back into the queue.
      *
-     * @param  int   $delay
-     * @return void
+     * @param int $delay
      */
     public function release($delay = 0)
     {
@@ -63,7 +58,8 @@ trait InteractsWithQueue
     /**
      * Set the base queue job instance.
      *
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param \Illuminate\Contracts\Queue\Job $job
+     *
      * @return $this
      */
     public function setJob(JobContract $job)

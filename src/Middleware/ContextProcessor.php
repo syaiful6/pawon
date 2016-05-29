@@ -11,14 +11,14 @@ use function Itertools\iter;
 class ContextProcessor implements MiddlewareInterface
 {
     /**
-     * an array of callable
+     * an array of callable.
      *
      * @var callable[]
      */
     protected $processors;
 
     /**
-     * the template renderer
+     * the template renderer.
      *
      * @var \Zend\Expressive\Template\TemplateRendererInterface
      */
@@ -53,6 +53,7 @@ class ContextProcessor implements MiddlewareInterface
                 $template->addDefaultParam(Renderer::TEMPLATE_ALL, $k, $v);
             }
         }
+
         return $frame->next($request);
     }
 

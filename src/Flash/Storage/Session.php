@@ -4,7 +4,6 @@ namespace Pawon\Flash\Storage;
 
 use Pawon\Session\Store;
 use Headbanger\ArrayList;
-use OutOfBoundsException;
 use Psr\Http\Message\ResponseInterface as Response;
 use function Itertools\to_array;
 
@@ -37,6 +36,7 @@ class Session extends BaseStorage
                 // pass, no item in session
             }
         }
+
         return [];
     }
 
@@ -46,6 +46,7 @@ class Session extends BaseStorage
         if ($data) {
             $data = $this->unserializeMessages($data);
         }
+
         return [$data, true];
     }
 

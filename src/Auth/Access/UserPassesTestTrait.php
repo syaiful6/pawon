@@ -22,6 +22,7 @@ trait UserPassesTestTrait
      * Define your test here against the provided request.
      *
      * @param Psr\Http\Message\ServerRequestInterfac $request
+     *
      * @return callable
      */
     protected function testCallback(Request $request)
@@ -30,9 +31,10 @@ trait UserPassesTestTrait
     }
 
     /**
-     * Override this method to use another callback
+     * Override this method to use another callback.
      *
      * @param Psr\Http\Message\ServerRequestInterfac $request
+     *
      * @return callable
      */
     protected function getTestCallback(Request $request)

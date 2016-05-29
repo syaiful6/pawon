@@ -21,7 +21,7 @@ trait BasicUserTrait
      * Always return False. This is a way of comparing User objects to
      * anonymous users.
      *
-     * @return boolean
+     * @return bool
      */
     public function isAnonymous()
     {
@@ -32,7 +32,7 @@ trait BasicUserTrait
      * Always return True. This is a way to tell if the user has been
      * authenticated in templates.
      *
-     * @return boolean
+     * @return bool
      */
     public function isAuthenticate()
     {
@@ -54,7 +54,8 @@ trait BasicUserTrait
      * needs rehashing.
      *
      * @param string $rawPassword
-     * @return boolean True if correct, false otherwise
+     *
+     * @return bool True if correct, false otherwise
      */
     public function checkPassword($rawPassword)
     {
@@ -63,8 +64,10 @@ trait BasicUserTrait
             if ($hasher->needsRehash($this->password)) {
                 $this->setPasswordAttribute($rawPassword);
             }
+
             return true;
         }
+
         return false;
     }
 
@@ -76,6 +79,7 @@ trait BasicUserTrait
         if (!$this->hasher) {
             return $this->hasher = new BcryptHasher();
         }
+
         return $this->hasher;
     }
 
@@ -100,8 +104,7 @@ trait BasicUserTrait
     /**
      * Set the token value for the "remember me" session.
      *
-     * @param  string  $value
-     * @return void
+     * @param string $value
      */
     public function setRememberToken($value)
     {

@@ -14,7 +14,7 @@ interface FlashMessageInterface
     const ERROR = 40;
 
     /**
-     * Attempts to add a message
+     * Attempts to add a message.
      */
     public function add($level, $message, $extraTag = '');
 
@@ -49,12 +49,12 @@ interface FlashMessageInterface
     public function update(Response $response);
 
     /**
-     * Returns the message storage
+     * Returns the message storage.
      */
     public function get(Request $request);
 
     /**
-     * set level
+     * set level.
      */
     public function setLevel($level);
 

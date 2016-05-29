@@ -15,8 +15,8 @@ class LazyString
     protected $result;
 
     /**
-    *
-    */
+     *
+     */
     public function __construct($func)
     {
         $this->func = $func;
@@ -32,6 +32,7 @@ class LazyString
         }
         try {
             $func = $this->func;
+
             return $this->result = $func();
         } catch (\Exception $e) {
             return '';

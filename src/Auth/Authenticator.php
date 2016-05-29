@@ -19,8 +19,8 @@ class Authenticator implements EventManagerAwareInterface
     const HASH_SESSION_KEY = '_AUTH_USER_REMEMBER_TOKEN';
 
     /**
-    * @var array AuthBackend[]
-    */
+     * @var array AuthBackend[]
+     */
     protected $backends;
 
     /**
@@ -33,7 +33,7 @@ class Authenticator implements EventManagerAwareInterface
      * instance. It will execute until an backend give the permission.
      *
      * @param App\Auth\AuthBackend[] $backends
-     * @param App\Session\Store $session
+     * @param App\Session\Store      $session
      */
     public function __construct(array $backends, Store $session = null)
     {
@@ -46,6 +46,7 @@ class Authenticator implements EventManagerAwareInterface
      * null.
      *
      * @param array $credentials
+     *
      * @return user model
      */
     public function authenticate(array $credentials)
@@ -81,7 +82,7 @@ class Authenticator implements EventManagerAwareInterface
     {
         $session = $this->session;
 
-        if (! $session instanceof Store) {
+        if (!$session instanceof Store) {
             throw new \RuntimeException('logged in without session on authenticator');
         }
 
@@ -100,7 +101,7 @@ class Authenticator implements EventManagerAwareInterface
             $sessionUserId = $session[static::SESSION_KEY];
             if ($sessionUserId !== $user->getKey() || (
                 $sessionAuthHash &&
-                    ! hash_equals($sessionAuthHash, $session->get(static::HASH_SESSION_KEY))
+                    !hash_equals($sessionAuthHash, $session->get(static::HASH_SESSION_KEY))
             )) {
                 $session->flush();
             }
@@ -109,7 +110,7 @@ class Authenticator implements EventManagerAwareInterface
         }
 
         $backend = $backend ?: $user->authBackend;
-        if (! $backend) {
+        if (!$backend) {
             $backend = $this->validateSingleBackend();
         }
         $backend = is_object($backend) ? get_class($backend) : $backend;
@@ -157,7 +158,7 @@ class Authenticator implements EventManagerAwareInterface
     public function user()
     {
         $session = $this->session;
-        if (! $session instanceof Store) {
+        if (!$session instanceof Store) {
             return new AnonymousUser();
         }
         $user = null;
@@ -251,13 +252,13 @@ class Authenticator implements EventManagerAwareInterface
     }
 
     /**
-     * Lazy load Zend\EventManager\EventManagerInterface
+     * Lazy load Zend\EventManager\EventManagerInterface.
      *
      * @return Zend\EventManager\EventManagerInterface
      */
     public function getEventManager()
     {
-        if (! $this->events) {
+        if (!$this->events) {
             $this->setEventManager(new EventManager());
         }
 
@@ -314,6 +315,7 @@ class Authenticator implements EventManagerAwareInterface
         if ($save) {
             $user->save();
         }
+
         return $token;
     }
 
@@ -343,7 +345,7 @@ class Authenticator implements EventManagerAwareInterface
         }
         throw new Exceptions\BackendRemoved(
             "No [$cls] backends in authenticator. It maybe removed while user's session"
-            ."still valid"
+            .'still valid'
         );
     }
 
@@ -359,6 +361,7 @@ class Authenticator implements EventManagerAwareInterface
                 $credentials[$key] = $subtitute;
             }
         }
+
         return $credentials;
     }
 }

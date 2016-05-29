@@ -3,9 +3,7 @@
 namespace Pawon\Console;
 
 use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -38,15 +36,16 @@ class Application extends SymfonyApplication
     /**
      * Run an Artisan console command by name.
      *
-     * @param  string  $command
-     * @param  array  $parameters
+     * @param string $command
+     * @param array  $parameters
+     *
      * @return int
      */
     public function call($command, array $parameters = [])
     {
         array_unshift($parameters, $command);
 
-        $this->lastOutput = new BufferedOutput;
+        $this->lastOutput = new BufferedOutput();
 
         $result = $this->run(new ArrayInput($parameter), $this->lastOutput);
 
@@ -66,7 +65,8 @@ class Application extends SymfonyApplication
     /**
      * Add a command to the console.
      *
-     * @param  \Symfony\Component\Console\Command\Command  $command
+     * @param \Symfony\Component\Console\Command\Command $command
+     *
      * @return \Symfony\Component\Console\Command\Command
      */
     public function add(SymfonyCommand $command)
@@ -89,7 +89,8 @@ class Application extends SymfonyApplication
     /**
      * Add a command, resolving through the application.
      *
-     * @param  string  $command
+     * @param string $command
+     *
      * @return \Symfony\Component\Console\Command\Command
      */
     public function resolve($command)
@@ -100,7 +101,8 @@ class Application extends SymfonyApplication
     /**
      * Resolve an array of commands through the application.
      *
-     * @param  array|mixed  $commands
+     * @param array|mixed $commands
+     *
      * @return $this
      */
     public function resolveCommands($commands)

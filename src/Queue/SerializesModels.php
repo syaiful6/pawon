@@ -31,8 +31,6 @@ trait SerializesModels
 
     /**
      * Restore the model after serialization.
-     *
-     * @return void
      */
     public function __wakeup()
     {
@@ -46,7 +44,8 @@ trait SerializesModels
     /**
      * Get the property value prepared for serialization.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return mixed
      */
     protected function getSerializedPropertyValue($value)
@@ -58,20 +57,22 @@ trait SerializesModels
     /**
      * Get the restored property value after deserialization.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return mixed
      */
     protected function getRestoredPropertyValue($value)
     {
         return $value instanceof ModelIdentifier
-                        ? (new $value->class)->newQuery()->useWritePdo()->findOrFail($value->id)
+                        ? (new $value->class())->newQuery()->useWritePdo()->findOrFail($value->id)
                         : $value;
     }
 
     /**
      * Get the property value for the given property.
      *
-     * @param  \ReflectionProperty  $property
+     * @param \ReflectionProperty $property
+     *
      * @return mixed
      */
     protected function getPropertyValue(ReflectionProperty $property)

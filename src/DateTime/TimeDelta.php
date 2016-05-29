@@ -16,6 +16,7 @@ class TimeDelta extends DateInterval
         if ($len === 1 && is_string($args[0]) && ctype_alnum($args[0])) {
             parent::__construct($args[0]);
             $this->normalizeAttr();
+
             return;
         }
         if ($len > 7) {
@@ -32,7 +33,7 @@ class TimeDelta extends DateInterval
         $seconds += ($minutes * 60) + ($hours * 3600);
 
         parent::__construct(
-            sprintf("P%dY%dM%dDT%S", $year, $months, $days, $seconds)
+            sprintf('P%dY%dM%dDT%S', $year, $months, $days, $seconds)
         );
     }
 
@@ -51,8 +52,8 @@ class TimeDelta extends DateInterval
         $this->i = $this->h = 0;
     }
 
-     /**
-     * years, months, weeks, days, hours, minutes, seconds
+    /**
+     * years, months, weeks, days, hours, minutes, seconds.
      */
     public static function create(...$args)
     {
@@ -101,7 +102,7 @@ class TimeDelta extends DateInterval
         if (static::createdFromDiff($interval)) {
             $this->d += $interval->days * $sign;
         } else {
-            if (!$interval instanceof TimeDelta) {
+            if (!$interval instanceof self) {
                 $args = array_map(function ($p) use ($interval) {
                     return $interval->{$p};
                 }, ['y', 'm', 'd', 'h', 'i', 's']);
@@ -125,7 +126,7 @@ class TimeDelta extends DateInterval
         if (static::createdFromDiff($interval)) {
             $this->d -= $interval->d * $sign;
         } else {
-            if (!$interval instanceof TimeDelta) {
+            if (!$interval instanceof self) {
                 $args = array_map(function ($p) use ($interval) {
                     return $interval->{$p};
                 }, ['y', 'm', 'd', 'h', 'i', 's']);

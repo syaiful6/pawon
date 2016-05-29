@@ -3,8 +3,6 @@
 namespace Pawon\Core;
 
 use Closure;
-use ArrayAccess;
-use ReflectionClass;
 use ReflectionMethod;
 use ReflectionFunction;
 use ReflectionParameter;
@@ -51,8 +49,9 @@ class ServiceManagerProxy implements ContainerInterface
     /**
      * Wrap the given closure such that its dependencies will be injected when executed.
      *
-     * @param  \Closure  $callback
-     * @param  array  $parameters
+     * @param \Closure $callback
+     * @param array    $parameters
+     *
      * @return \Closure
      */
     public function wrap(Closure $callback, array $parameters = [])
@@ -65,9 +64,10 @@ class ServiceManagerProxy implements ContainerInterface
     /**
      * Call the given Closure / class@method and inject its dependencies.
      *
-     * @param  callable|string  $callback
-     * @param  array  $parameters
-     * @param  string|null  $defaultMethod
+     * @param callable|string $callback
+     * @param array           $parameters
+     * @param string|null     $defaultMethod
+     *
      * @return mixed
      */
     public function call($callback, array $parameters = [], $defaultMethod = null)
@@ -84,12 +84,13 @@ class ServiceManagerProxy implements ContainerInterface
     /**
      * Determine if the given string is in Class@method syntax.
      *
-     * @param  mixed  $callback
+     * @param mixed $callback
+     *
      * @return bool
      */
     protected function isCallableWithAtSign($callback)
     {
-        if (! is_string($callback)) {
+        if (!is_string($callback)) {
             return false;
         }
 
@@ -99,8 +100,9 @@ class ServiceManagerProxy implements ContainerInterface
     /**
      * Get all dependencies for a given method.
      *
-     * @param  callable|string  $callback
-     * @param  array  $parameters
+     * @param callable|string $callback
+     * @param array           $parameters
+     *
      * @return array
      */
     protected function getMethodDependencies($callback, array $parameters = [])
@@ -117,7 +119,8 @@ class ServiceManagerProxy implements ContainerInterface
     /**
      * Get the proper reflection instance for the given callback.
      *
-     * @param  callable|string  $callback
+     * @param callable|string $callback
+     *
      * @return \ReflectionFunctionAbstract
      */
     protected function getCallReflector($callback)
@@ -136,9 +139,10 @@ class ServiceManagerProxy implements ContainerInterface
     /**
      * Get the dependency for the given call parameter.
      *
-     * @param  \ReflectionParameter  $parameter
-     * @param  array  $parameters
-     * @param  array  $dependencies
+     * @param \ReflectionParameter $parameter
+     * @param array                $parameters
+     * @param array                $dependencies
+     *
      * @return mixed
      */
     protected function addDependencyForCallParameter(ReflectionParameter $parameter, array &$parameters, &$dependencies)
@@ -157,9 +161,10 @@ class ServiceManagerProxy implements ContainerInterface
     /**
      * Call a string reference to a class using Class@method syntax.
      *
-     * @param  string  $target
-     * @param  array  $parameters
-     * @param  string|null  $defaultMethod
+     * @param string      $target
+     * @param array       $parameters
+     * @param string|null $defaultMethod
+     *
      * @return mixed
      *
      * @throws \InvalidArgumentException

@@ -24,11 +24,10 @@ class DatabaseJob extends AbstractJob implements Job
     /**
      * Create a new job instance.
      *
-     * @param  \Interop\Container\ContainerInterface  $container
-     * @param  \Illuminate\Queue\DatabaseQueue  $database
-     * @param  \StdClass  $job
-     * @param  string  $queue
-     * @return void
+     * @param \Interop\Container\ContainerInterface $container
+     * @param \Illuminate\Queue\DatabaseQueue       $database
+     * @param \StdClass                             $job
+     * @param string                                $queue
      */
     public function __construct(Container $container, DatabaseQueue $database, $job, $queue)
     {
@@ -41,8 +40,6 @@ class DatabaseJob extends AbstractJob implements Job
 
     /**
      * Fire the job.
-     *
-     * @return void
      */
     public function fire()
     {
@@ -51,8 +48,6 @@ class DatabaseJob extends AbstractJob implements Job
 
     /**
      * Delete the job from the queue.
-     *
-     * @return void
      */
     public function delete()
     {
@@ -64,8 +59,7 @@ class DatabaseJob extends AbstractJob implements Job
     /**
      * Release the job back into the queue.
      *
-     * @param  int  $delay
-     * @return void
+     * @param int $delay
      */
     public function release($delay = 0)
     {

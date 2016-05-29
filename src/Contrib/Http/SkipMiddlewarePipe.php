@@ -68,11 +68,12 @@ class SkipMiddlewarePipe extends MiddlewarePipe
         parent::pipe($middleware);
     }
 
-     /**
-     * Determine the border between the request path and current route
+    /**
+     * Determine the border between the request path and current route.
      *
      * @param string $path
      * @param string $route
+     *
      * @return string
      */
     protected function getBorder($path, $route)
@@ -81,6 +82,7 @@ class SkipMiddlewarePipe extends MiddlewarePipe
             return '/';
         }
         $routeLength = strlen($route);
+
         return (strlen($path) > $routeLength) ? $path[$routeLength] : '';
     }
 
@@ -121,8 +123,9 @@ class SkipMiddlewarePipe extends MiddlewarePipe
     }
 
     /**
-     * @param string $middleware
+     * @param string             $middleware
      * @param ContainerInterface $container
+     *
      * @return callable
      */
     private function resolveLazyMiddlewareService($middleware)
@@ -136,6 +139,7 @@ class SkipMiddlewarePipe extends MiddlewarePipe
                     MiddlewareInterface::class
                 ));
             }
+
             return $md->handle($request, $frame);
         };
     }

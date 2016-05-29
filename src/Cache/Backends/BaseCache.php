@@ -3,19 +3,18 @@
 namespace Pawon\Cache\Backends;
 
 use OutOfBoundsException;
-use InvalidArgumentException;
 
 abstract class BaseCache
 {
     use CacheKeyTrait;
 
     /**
-     * @param integer
+     * @param int
      */
     protected $defaultTimeout;
 
     /**
-     * @param integer max
+     * @param int max
      */
     protected $maxEntries;
 
@@ -108,6 +107,7 @@ abstract class BaseCache
                 $result[$key] = $val;
             }
         }
+
         return $result;
     }
 
@@ -128,6 +128,7 @@ abstract class BaseCache
             // fect again to avoid race
             return $this->get($key, $version, $default);
         }
+
         return $val;
     }
 
@@ -200,6 +201,7 @@ abstract class BaseCache
         }
         $this->set($key, $value, $version + $delta);
         $this->delete($key, $version);
+
         return $version + $delta;
     }
 

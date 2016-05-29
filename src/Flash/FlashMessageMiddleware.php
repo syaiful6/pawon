@@ -8,7 +8,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class FlashMessageMiddleware implements MiddlewareInterface
 {
-
     protected $flash;
 
     protected $debug;
@@ -37,6 +36,7 @@ class FlashMessageMiddleware implements MiddlewareInterface
                 'Not all temporary messages could be stored.'
             );
         }
+
         return $response;
     }
 }

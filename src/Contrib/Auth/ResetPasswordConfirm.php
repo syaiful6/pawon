@@ -53,7 +53,7 @@ class ResetPasswordConfirm extends BaseActionMiddleware
     }
 
     /**
-     * Give the user an helpfull message here
+     * Give the user an helpfull message here.
      *
      * @return string
      */
@@ -75,11 +75,11 @@ class ResetPasswordConfirm extends BaseActionMiddleware
         $html = $this->renderer->render($this->getResetTemplate(), [
             'error' => new MessageBag(),
             'token' => $token,
-            'email' => $email
+            'email' => $email,
         ]);
 
         return $frame->getResponseFactory()->make($html, 200, [
-            'Content-Type' => 'text/html'
+            'Content-Type' => 'text/html',
         ]);
     }
 
@@ -88,7 +88,7 @@ class ResetPasswordConfirm extends BaseActionMiddleware
      */
     public function post(Request $request, FrameInterface $frame)
     {
-        $valid =  $this->isValid($request, $this->getResetValidationRules());
+        $valid = $this->isValid($request, $this->getResetValidationRules());
 
         if ($valid) {
             return $this->reset($request, $frame);
@@ -100,11 +100,11 @@ class ResetPasswordConfirm extends BaseActionMiddleware
         $html = $this->renderer->render($this->getResetTemplate(), [
             'error' => $this->validator->errors(),
             'token' => $token,
-            'email' => $email
+            'email' => $email,
         ]);
 
         return $frame->getResponseFactory()->make($html, 200, [
-            'Content-Type' => 'text/html'
+            'Content-Type' => 'text/html',
         ]);
     }
 
@@ -150,7 +150,7 @@ class ResetPasswordConfirm extends BaseActionMiddleware
         $out
     ) {
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => '/'
+            'location' => '/',
         ]);
     }
 
@@ -168,7 +168,7 @@ class ResetPasswordConfirm extends BaseActionMiddleware
         }
 
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => $request->getUri()->getPath()
+            'location' => $request->getUri()->getPath(),
         ]);
     }
 
@@ -182,7 +182,7 @@ class ResetPasswordConfirm extends BaseActionMiddleware
                 'email',
                 'password',
                 'password_confirmation',
-                'token'
+                'token',
             ]);
         }, ARRAY_FILTER_USE_KEY);
     }

@@ -8,7 +8,6 @@ use Headbanger\ArrayList;
 use Pawon\Flash\Message;
 use Pawon\Flash\FlashMessageInterface as FlashMessage;
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
 abstract class BaseStorage implements Countable, IteratorAggregate
 {
@@ -87,6 +86,7 @@ abstract class BaseStorage implements Countable, IteratorAggregate
         } elseif ($this->addedNew) {
             $this->loaded->extend($this->queued);
             $message = $this->loaded;
+
             return $this->storeMessages($message, $response);
         }
     }

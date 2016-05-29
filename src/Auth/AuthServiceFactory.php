@@ -49,6 +49,7 @@ class AuthServiceFactory
         if ($container->has(Store::class)) {
             $authenticator->setSession($container->get(Store::class));
         }
+
         return $authenticator;
     }
 

@@ -11,8 +11,8 @@ use Illuminate\Database\ConnectionResolverInterface as DBConnection;
 class CacheFactory
 {
     /**
-    *
-    */
+     *
+     */
     public function __invoke(Container $container, $requestedName)
     {
         if ($requestedName === RateLimiter::class) {
@@ -63,6 +63,7 @@ class CacheFactory
         $encrypter = $container->get(Encrypter::class);
 
         $params['table'] = $config['table'];
+
         return new Backends\Database($connection, $encrypter, $params);
     }
 
@@ -72,6 +73,7 @@ class CacheFactory
     protected function createMemcachedBackend(Container $container, array $config, array $params)
     {
         $memcached = $this->connectToMemcache($config['servers']);
+
         return new Backends\Memcached($memcached, $params);
     }
 
@@ -91,7 +93,7 @@ class CacheFactory
 
         $memcachedStatus = $memcached->getVersion();
 
-        if (! is_array($memcachedStatus)) {
+        if (!is_array($memcachedStatus)) {
             throw new \RuntimeException('No Memcached servers added.');
         }
 

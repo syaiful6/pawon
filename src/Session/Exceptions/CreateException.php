@@ -3,7 +3,7 @@
 namespace Pawon\Session\Exceptions;
 
 /**
- * Used internally
+ * Used internally.
  */
 class CreateException extends Exception
 {

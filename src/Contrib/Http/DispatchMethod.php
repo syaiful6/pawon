@@ -15,6 +15,7 @@ trait DispatchMethod
         if (method_exists($this, $method = strtolower($request->getMethod()))) {
             return $this->$method($request, $frame);
         }
+
         return $frame->next($request);
     }
 }

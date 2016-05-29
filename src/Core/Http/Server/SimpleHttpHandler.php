@@ -96,7 +96,7 @@ class SimpleHttpHandler extends BaseHttpHandler implements LoggerAwareInterface
     }
 
     /**
-     * Loops through the output buffer
+     * Loops through the output buffer.
      *
      * @param int|null $maxBufferLevel Flush up to this buffer level.
      */

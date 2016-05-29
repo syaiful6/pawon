@@ -2,7 +2,6 @@
 
 namespace Pawon\Core\Mail;
 
-use Closure;
 use Swift_Mailer;
 use Swift_Message;
 use InvalidArgumentException;
@@ -45,7 +44,7 @@ class Mailer implements MailerContract
 
     /**
      * @param Zend\Expressive\Template\TemplateRendererInterface $template
-     * @param Swift_Mailer $swift
+     * @param Swift_Mailer                                       $swift
      */
     public function __construct(Renderer $template, Swift_Mailer $swift)
     {
@@ -56,9 +55,8 @@ class Mailer implements MailerContract
     /**
      * Set the global from address and name.
      *
-     * @param  string  $address
-     * @param  string|null  $name
-     * @return void
+     * @param string      $address
+     * @param string|null $name
      */
     public function alwaysFrom($address, $name = null)
     {
@@ -68,9 +66,8 @@ class Mailer implements MailerContract
     /**
      * Set the global to address and name.
      *
-     * @param  string  $address
-     * @param  string|null  $name
-     * @return void
+     * @param string      $address
+     * @param string|null $name
      */
     public function alwaysTo($address, $name = null)
     {
@@ -78,7 +75,7 @@ class Mailer implements MailerContract
     }
 
     /**
-     * Send a raw message
+     * Send a raw message.
      */
     public function raw($text, $callback)
     {
@@ -88,10 +85,9 @@ class Mailer implements MailerContract
     /**
      * Send a new message when only a plain part.
      *
-     * @param  string  $view
-     * @param  array  $data
-     * @param  mixed  $callback
-     * @return void
+     * @param string $view
+     * @param array  $data
+     * @param mixed  $callback
      */
     public function plain($view, array $data, $callback)
     {
@@ -101,10 +97,9 @@ class Mailer implements MailerContract
     /**
      * Send a new message using a view.
      *
-     * @param  string|array  $view
-     * @param  array  $data
-     * @param  \Closure|string  $callback
-     * @return void
+     * @param string|array    $view
+     * @param array           $data
+     * @param \Closure|string $callback
      */
     public function send($view, array $data, $callback)
     {
@@ -137,8 +132,6 @@ class Mailer implements MailerContract
      * Force the transport to re-connect.
      *
      * This will prevent errors in daemon queue situations.
-     *
-     * @return void
      */
     protected function forceReconnection()
     {
@@ -148,12 +141,11 @@ class Mailer implements MailerContract
     /**
      * Add the content to a given message.
      *
-     * @param  \Illuminate\Mail\Message  $message
-     * @param  string  $view
-     * @param  string  $plain
-     * @param  string  $raw
-     * @param  array  $data
-     * @return void
+     * @param \Illuminate\Mail\Message $message
+     * @param string                   $view
+     * @param string                   $plain
+     * @param string                   $raw
+     * @param array                    $data
      */
     protected function addContent($message, $view, $plain, $raw, $data)
     {
@@ -177,7 +169,8 @@ class Mailer implements MailerContract
     /**
      * Parse the given view name or array.
      *
-     * @param  string|array  $view
+     * @param string|array $view
+     *
      * @return array
      *
      * @throws \InvalidArgumentException
@@ -212,8 +205,7 @@ class Mailer implements MailerContract
     /**
      * Send a Swift Message instance.
      *
-     * @param  \Swift_Message  $message
-     * @return void
+     * @param \Swift_Message $message
      */
     protected function sendSwiftMessage($message)
     {
@@ -223,9 +215,11 @@ class Mailer implements MailerContract
     /**
      * Call the provided message builder.
      *
-     * @param  callable  $callback
-     * @param  \Illuminate\Mail\Message  $message
+     * @param callable                 $callback
+     * @param \Illuminate\Mail\Message $message
+     *
      * @return mixed
+     *
      * @throws \InvalidArgumentException
      */
     protected function callMessageBuilder($callback, $message)
@@ -244,12 +238,12 @@ class Mailer implements MailerContract
      */
     protected function createMessage()
     {
-        $message = new Message(new Swift_Message);
+        $message = new Message(new Swift_Message());
 
         // If a global from address has been specified we will set it on every message
         // instances so the developer does not have to repeat themselves every time
         // they create a new message. We will just go ahead and push the address.
-        if (! empty($this->from['address'])) {
+        if (!empty($this->from['address'])) {
             $message->from($this->from['address'], $this->from['name']);
         }
 
@@ -259,8 +253,9 @@ class Mailer implements MailerContract
     /**
      * Render the given view.
      *
-     * @param  string  $view
-     * @param  array  $data
+     * @param string $view
+     * @param array  $data
+     *
      * @return string
      */
     protected function getTemplate($template, $data)
@@ -301,8 +296,7 @@ class Mailer implements MailerContract
     /**
      * Set the Swift Mailer instance.
      *
-     * @param  \Swift_Mailer  $swift
-     * @return void
+     * @param \Swift_Mailer $swift
      */
     public function setSwiftMailer($swift)
     {

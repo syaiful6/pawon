@@ -3,7 +3,6 @@
 namespace Pawon\Core\Http\Server;
 
 use Exception;
-use Throwable;
 use Countable;
 use LogicException;
 use function Pawon\invoke;
@@ -60,7 +59,7 @@ abstract class BaseHttpHandler
     protected function finishResponse()
     {
         try {
-            if (! $this->isResultFile() || ! $this->sendFile()) {
+            if (!$this->isResultFile() || !$this->sendFile()) {
                 foreach ($this->result as $data) {
                     $this->write($data);
                 }
@@ -109,9 +108,9 @@ abstract class BaseHttpHandler
     {
         assert(is_string($data), 'data must be string');
 
-        if (! $this->status) {
+        if (!$this->status) {
             throw new LogicException('write() before startResponse()');
-        } elseif (! $this->isHeaderSent) {
+        } elseif (!$this->isHeaderSent) {
             $this->sentLen = strlen($data);
             $this->sendHeaders();
             $this->flush();
@@ -135,7 +134,7 @@ abstract class BaseHttpHandler
      */
     protected function finishContent()
     {
-        if (! $this->isHeaderSent) {
+        if (!$this->isHeaderSent) {
             $this->headers->setDefault('Content-Length', '0');
             $this->sendHeaders();
         }
@@ -185,7 +184,7 @@ abstract class BaseHttpHandler
     protected function handleError($e)
     {
         $this->logException($e);
-        if (! $this->isHeaderSent) {
+        if (!$this->isHeaderSent) {
             if ($e instanceof \UnexpectedValueException && strpos($e->message(), 'protocol version')) {
                 $this->sendClientError($this->request, [$this, 'startResponse'], $e->message());
             } else {
@@ -220,7 +219,7 @@ abstract class BaseHttpHandler
      */
     protected function cleanUpHeaders()
     {
-        if (! isset($this->headers['Content-Length'])
+        if (!isset($this->headers['Content-Length'])
             && null !== $this->headers['Content-Length']) {
             $this->setContentLength();
         }

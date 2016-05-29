@@ -44,15 +44,11 @@ abstract class AbstractJob
 
     /**
      * Fire the job.
-     *
-     * @return void
      */
     abstract public function fire();
 
     /**
      * Delete the job from the queue.
-     *
-     * @return void
      */
     public function delete()
     {
@@ -72,8 +68,7 @@ abstract class AbstractJob
     /**
      * Release the job back into the queue.
      *
-     * @param  int   $delay
-     * @return void
+     * @param int $delay
      */
     public function release($delay = 0)
     {
@@ -117,8 +112,7 @@ abstract class AbstractJob
     /**
      * Resolve and fire the job handler method.
      *
-     * @param  array  $payload
-     * @return void
+     * @param array $payload
      */
     protected function resolveAndFire(array $payload)
     {
@@ -132,7 +126,8 @@ abstract class AbstractJob
     /**
      * Parse the job declaration into class and method.
      *
-     * @param  string  $job
+     * @param string $job
+     *
      * @return array
      */
     protected function parseJob($job)
@@ -145,7 +140,8 @@ abstract class AbstractJob
     /**
      * Resolve the given job handler.
      *
-     * @param  string  $class
+     * @param string $class
+     *
      * @return mixed
      */
     protected function resolve($class)
@@ -156,7 +152,8 @@ abstract class AbstractJob
     /**
      * Resolve all of the queueable entities in the given payload.
      *
-     * @param  mixed  $data
+     * @param mixed $data
+     *
      * @return mixed
      */
     protected function resolveQueueableEntities($data)
@@ -181,7 +178,8 @@ abstract class AbstractJob
     /**
      * Resolve a single queueable entity from the resolver.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return \Illuminate\Contracts\Queue\QueueableEntity
      */
     protected function resolveQueueableEntity($value)
@@ -197,8 +195,6 @@ abstract class AbstractJob
 
     /**
      * Call the failed method on the job instance.
-     *
-     * @return void
      */
     public function failed()
     {
@@ -226,7 +222,8 @@ abstract class AbstractJob
     /**
      * Calculate the number of seconds with the given delay.
      *
-     * @param  \DateTime|int  $delay
+     * @param \DateTime|int $delay
+     *
      * @return int
      */
     protected function getSeconds($delay)

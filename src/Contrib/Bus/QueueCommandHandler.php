@@ -12,7 +12,6 @@ use League\Tactician\Handler\MethodNameInflector\MethodNameInflector;
 
 class QueueCommandHandler implements Middleware
 {
-
     protected $queue;
 
     /**
@@ -46,7 +45,7 @@ class QueueCommandHandler implements Middleware
     }
 
     /**
-     * Executes a command and optionally returns a value
+     * Executes a command and optionally returns a value.
      *
      * @param object   $command
      * @param callable $next
@@ -64,7 +63,7 @@ class QueueCommandHandler implements Middleware
         $handler = function ($job) use ($command) {
             $this->executeCommand($command);
 
-            if (! $job->isDeletedOrReleased()) {
+            if (!$job->isDeletedOrReleased()) {
                 $job->delete();
             }
         };
@@ -110,7 +109,8 @@ class QueueCommandHandler implements Middleware
     /**
      * Determine if the given command should be queued.
      *
-     * @param  mixed  $command
+     * @param mixed $command
+     *
      * @return bool
      */
     protected function commandShouldBeQueued($command)

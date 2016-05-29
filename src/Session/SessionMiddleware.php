@@ -59,7 +59,7 @@ class SessionMiddleware implements MiddlewareInterface
                         $session->save();
                     } catch (UpdateException $e) {
                         return $frame->getResponseFactory->make('', 302, [
-                            'location', $this->getNoPermissionRedirectPath($request)
+                            'location', $this->getNoPermissionRedirectPath($request),
                         ]);
                     }
                 }
@@ -87,6 +87,7 @@ class SessionMiddleware implements MiddlewareInterface
         $cookie[$name]['path'] = $this->configs['path'] ?: '/';
 
         $out = $cookie->getOutput(null, '', '');
+
         return $response->withAddedHeader('Set-Cookie', $out);
     }
 
@@ -109,6 +110,7 @@ class SessionMiddleware implements MiddlewareInterface
             $cookie[$name]['httponly'] = true;
         }
         $out = $cookie->getOutput(null, '', '');
+
         return $response->withAddedHeader('Set-Cookie', $out);
     }
 
@@ -122,7 +124,8 @@ class SessionMiddleware implements MiddlewareInterface
         if ($configs['expire_on_close']) {
             return 0;
         }
-        return DateTime::now()->modify((int) $configs['lifetime'] . ' second');
+
+        return DateTime::now()->modify((int) $configs['lifetime'].' second');
     }
 
     /**
@@ -137,10 +140,11 @@ class SessionMiddleware implements MiddlewareInterface
         }
 
         $set = new Set(array_map('strtolower', $vary));
-        $newAdded = array_filter(['cookie', ], function ($item) use ($set) {
-            return ! $set->contains($item);
+        $newAdded = array_filter(['cookie'], function ($item) use ($set) {
+            return !$set->contains($item);
         });
-        $vary = join(', ', array_merge($vary, $newAdded));
+        $vary = implode(', ', array_merge($vary, $newAdded));
+
         return $response->withHeader('Vary', $vary);
     }
 
@@ -166,7 +170,8 @@ class SessionMiddleware implements MiddlewareInterface
     /**
      * Determine if the configuration odds hit the lottery.
      *
-     * @param  array  $config
+     * @param array $config
+     *
      * @return bool
      */
     protected function configHitsLottery(array $config)

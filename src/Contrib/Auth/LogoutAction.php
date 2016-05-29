@@ -38,12 +38,12 @@ class LogoutAction implements MiddlewareInterface
         }
 
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => '/'
+            'location' => '/',
         ]);
     }
 
     /**
-     * Give the user an helpfull message here
+     * Give the user an helpfull message here.
      *
      * @return string
      */

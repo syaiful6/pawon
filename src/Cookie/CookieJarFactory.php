@@ -24,6 +24,7 @@ class CookieJarFactory
                 );
             }
         }
+
         return $cookiejar;
     }
 }

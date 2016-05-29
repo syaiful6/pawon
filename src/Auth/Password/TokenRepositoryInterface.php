@@ -7,7 +7,8 @@ interface TokenRepositoryInterface
     /**
      * Create a new token.
      *
-     * @param  object  $user
+     * @param object $user
+     *
      * @return string
      */
     public function create($user);
@@ -15,8 +16,9 @@ interface TokenRepositoryInterface
     /**
      * Determine if a token record exists and is valid.
      *
-     * @param  object  $user The user model
-     * @param  string  $token
+     * @param object $user  The user model
+     * @param string $token
+     *
      * @return bool
      */
     public function exists($user, $token);
@@ -24,15 +26,12 @@ interface TokenRepositoryInterface
     /**
      * Delete a token record.
      *
-     * @param  string  $token
-     * @return void
+     * @param string $token
      */
     public function delete($token);
 
     /**
      * Delete expired tokens.
-     *
-     * @return void
      */
     public function deleteExpired();
 }

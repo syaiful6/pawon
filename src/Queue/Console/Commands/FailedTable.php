@@ -39,8 +39,6 @@ class FailedTable extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function fire()
     {
@@ -64,7 +62,8 @@ class FailedTable extends Command
     /**
      * Create a base migration file for the table.
      *
-     * @param  string  $table
+     * @param string $table
+     *
      * @return string
      */
     protected function createBaseMigration($table = 'failed_jobs')

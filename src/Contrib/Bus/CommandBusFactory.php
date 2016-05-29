@@ -20,6 +20,7 @@ class CommandBusFactory
     {
         $locator = new CallableLocator(function ($commandName) use ($container) {
             $commandName = str_replace('Jobs', 'Workers', $commandName);
+
             return $container->get($commandName);
         });
 

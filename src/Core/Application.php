@@ -2,8 +2,6 @@
 
 namespace Pawon\Core;
 
-use SplQueue;
-use Traversable;
 use Pawon\Http\Middleware\MiddlewarePipe;
 use Interop\Container\ContainerInterface;
 use Pawon\Http\ResponseFactoryInterface;
@@ -75,7 +73,7 @@ class Application extends MiddlewarePipe
      */
     public function route($path, $middleware = null, array $methods = null, $name = null)
     {
-        if (! $path instanceof Route && null === $middleware) {
+        if (!$path instanceof Route && null === $middleware) {
             throw new Exception\ImproperlyConfigured(sprintf(
                 '%s expects either a route argument, or a combination of a path and middleware arguments',
                 __METHOD__
@@ -83,17 +81,17 @@ class Application extends MiddlewarePipe
         }
 
         if ($path instanceof Route) {
-            $route   = $path;
-            $path    = $route->getPath();
+            $route = $path;
+            $path = $route->getPath();
             $methods = $route->getAllowedMethods();
-            $name    = $route->getName();
+            $name = $route->getName();
         }
 
         $this->checkForDuplicateRoute($path, $methods);
 
-        if (! isset($route)) {
+        if (!isset($route)) {
             $methods = (null === $methods) ? Route::HTTP_METHOD_ANY : $methods;
-            $route   = new Route($path, $middleware, $methods, $name);
+            $route = new Route($path, $middleware, $methods, $name);
         }
 
         $this->routes[] = $route;
@@ -119,7 +117,7 @@ class Application extends MiddlewarePipe
         $frame = new Frame($this->queue, $this->factory, $this->finalHandler);
         $response = $frame->next($request);
         // complain if the stack not return reponse (common error)
-        if (! $response instanceof Response) {
+        if (!$response instanceof Response) {
             throw new \UnexpectedValueException(sprintf(
                 'The middleware stack end with non instance of %s, it return %s instead.',
                 Response::class,
@@ -198,7 +196,7 @@ class Application extends MiddlewarePipe
             }
 
             return array_reduce($methods, function ($carry, $method) use ($route) {
-                return ($carry || $route->allowsMethod($method));
+                return $carry || $route->allowsMethod($method);
             }, false);
         });
 

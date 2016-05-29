@@ -65,8 +65,9 @@ class ErrorHandler implements MiddlewareInterface
     ) {
         $html = $this->template->render('error::csrf-403', [
             'title' => 'Forbidden',
-            'main'  => 'CSRF verification failed. Request aborted.'
+            'main' => 'CSRF verification failed. Request aborted.',
         ]);
+
         return $frame->getResponseFactory()->make($html, 403);
     }
 
@@ -80,6 +81,7 @@ class ErrorHandler implements MiddlewareInterface
     ) {
         $status = $error->getStatusCode();
         $html = $this->template->render('error::'.$status, compact('error', 'request'));
+
         return $frame->getResponseFactory()->make($html, $status, $error->getHeaders());
     }
 
@@ -102,6 +104,7 @@ class ErrorHandler implements MiddlewareInterface
     ) {
         if (!$this->debug) {
             $html = $this->template->render('error::500', compact('error', 'request'));
+
             return $frame->getResponseFactory->make($html, 500);
         }
 
@@ -112,7 +115,7 @@ class ErrorHandler implements MiddlewareInterface
     }
 
     /**
-     * Prepare the Whoops page handler with a table displaying request information
+     * Prepare the Whoops page handler with a table displaying request information.
      *
      * @param Request $request
      */
@@ -120,14 +123,14 @@ class ErrorHandler implements MiddlewareInterface
     {
         $uri = $request->getUri();
         $this->whoopsHandler->addDataTable('Pawon Application Request', [
-            'HTTP Method'            => $request->getMethod(),
-            'URI'                    => (string) $uri,
-            'Script'                 => $request->getServerParams()['SCRIPT_NAME'],
-            'Headers'                => $request->getHeaders(),
-            'Cookies'                => $request->getCookieParams(),
-            'Attributes'             => $request->getAttributes(),
+            'HTTP Method' => $request->getMethod(),
+            'URI' => (string) $uri,
+            'Script' => $request->getServerParams()['SCRIPT_NAME'],
+            'Headers' => $request->getHeaders(),
+            'Cookies' => $request->getCookieParams(),
+            'Attributes' => $request->getAttributes(),
             'Query String Arguments' => $request->getQueryParams(),
-            'Body Params'            => $request->getParsedBody(),
+            'Body Params' => $request->getParsedBody(),
         ]);
     }
 }

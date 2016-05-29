@@ -31,10 +31,9 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
     /**
      * Create a new database failed job provider.
      *
-     * @param  \Illuminate\Database\ConnectionResolverInterface  $resolver
-     * @param  string  $database
-     * @param  string  $table
-     * @return void
+     * @param \Illuminate\Database\ConnectionResolverInterface $resolver
+     * @param string                                           $database
+     * @param string                                           $table
      */
     public function __construct(ConnectionResolverInterface $resolver, $database, $table)
     {
@@ -46,10 +45,9 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
     /**
      * Log a failed job into storage.
      *
-     * @param  string  $connection
-     * @param  string  $queue
-     * @param  string  $payload
-     * @return void
+     * @param string $connection
+     * @param string $queue
+     * @param string $payload
      */
     public function log($connection, $queue, $payload)
     {
@@ -71,7 +69,8 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
     /**
      * Get a single failed job.
      *
-     * @param  mixed  $id
+     * @param mixed $id
+     *
      * @return array
      */
     public function find($id)
@@ -82,7 +81,8 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
     /**
      * Delete a single failed job from storage.
      *
-     * @param  mixed  $id
+     * @param mixed $id
+     *
      * @return bool
      */
     public function forget($id)
@@ -92,8 +92,6 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
 
     /**
      * Flush all of the failed jobs from storage.
-     *
-     * @return void
      */
     public function flush()
     {
