@@ -3,7 +3,6 @@
 namespace Pawon\Functional;
 
 use function Pawon\arity;
-use function Pawon\merge_left_params;
 
 /**
  * Not much like haskell version, but it help a lot. We can do like this
@@ -27,13 +26,36 @@ class Curry
     protected $args;
 
     /**
+     * @var integer
+     */
+    protected $arity;
+
+    /**
      *
      */
     public function __construct(callable $func, ...$args)
     {
         $this->func = $func;
         $this->args = $args;
-        $this->left = arity($func) - count($args);
+        $this->arity = arity($func) - count($args);
+    }
+
+    /**
+     * Force the required arguments
+     */
+    public function withArity($num)
+    {
+        $me = clone $this;
+        $me->arity = $num;
+        return $me;
+    }
+
+    /**
+     *
+     */
+    public function getArity()
+    {
+        return $this->arity;
     }
 
     /**
@@ -41,14 +63,14 @@ class Curry
      */
     public function __invoke(...$params)
     {
-        $args = merge_left_params($this->args, $params);
-        if (($this->left - count($params)) <= 0) {
+        $args = array_merge($this->args, $params);
+        if (($this->arity - count($params)) <= 0) {
             return call_user_func_array($this->func, $args);
         }
         // clone so we dont mess it if we call more than once
         $me = clone $this;
         $me->args = $args;
-        $me->left -= count($params);
+        $me->arity -= count($params);
 
         return $me;
     }
