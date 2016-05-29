@@ -9,7 +9,8 @@ use Interop\Container\ContainerInterface;
 use Pawon\Http\ResponseFactoryInterface;
 use Pawon\Http\Middleware\Frame;
 use Pawon\Http\Middleware\MiddlewareInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use function Itertools\zip;
@@ -113,11 +114,18 @@ class Application extends MiddlewarePipe
     /**
      *
      */
-    public function __invoke(ServerRequestInterface $request, callable $startResponse)
+    public function __invoke(Request $request, callable $startResponse)
     {
         $frame = new Frame($this->queue, $this->factory, $this->finalHandler);
         $response = $frame->next($request);
-
+        // complain if the stack not return reponse (common error)
+        if (! $response instanceof Response) {
+            throw new \UnexpectedValueException(sprintf(
+                'The middleware stack end with non instance of %s, it return %s instead.',
+                Response::class,
+                is_object($response) ? get_class($response) : gettype($response)
+            ));
+        }
         $status = sprintf(
             '%d %s',
             $response->getStatusCode(),

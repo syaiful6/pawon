@@ -8,6 +8,7 @@ use UnexpectedValueException;
 use Pawon\Auth\Authenticator;
 use Illuminate\Contracts\Mail\Mailer as MailerContract;
 use Illuminate\Contracts\Auth\PasswordBroker as PasswordBrokerContract;
+use function Pawon\urlsafe_base64_encode;
 
 class PasswordBroker implements PasswordBrokerContract
 {
@@ -88,13 +89,8 @@ class PasswordBroker implements PasswordBrokerContract
 
         $template = $this->emailTemplate;
         $context = compact('token', 'user');
-        $context['email'] = $user->getEmail();
-        $context['uid'] = strtr(
-            base64_encode($user->getKey()),
-            '+/',
-            '-_'
-        );
-        $context['uid'] = rtrim($context['uid'], "\n=");
+        $context['email'] = urlsafe_base64_encode($user->getEmail());
+        $context['uid'] = urlsafe_base64_encode($user->getKey());
 
         return $this->mailer->send(
             $template,
