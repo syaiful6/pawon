@@ -12,6 +12,7 @@ use Illuminate\Contracts\Auth\PasswordBroker;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use function Pawon\trans;
 use function Pawon\partial;
+use function Pawon\urlsafe_base64_decode;
 
 class ResetPasswordConfirm extends BaseActionMiddleware
 {
