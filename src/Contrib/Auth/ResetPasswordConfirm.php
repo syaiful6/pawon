@@ -117,7 +117,7 @@ class ResetPasswordConfirm extends BaseActionMiddleware
 
         $response = $this->broker->reset(
             $credentials,
-            partial([$this, 'resetPassword'], $request)
+            $this->resetPassword()
         );
 
         switch ($response) {
@@ -132,13 +132,12 @@ class ResetPasswordConfirm extends BaseActionMiddleware
     /**
      *
      */
-    protected function resetPassword($request, $user, $password)
+    protected function resetPassword()
     {
-        $user->setPassword($password);
-        $user->save();
-        $user->authBackend = ModelBackend::class;
-
-        return $this->authenticator->login($request, $user);
+        return function ($user, $password) {
+            $user->setPassword($password);
+            $user->save();
+        };
     }
 
     /**
@@ -149,8 +148,11 @@ class ResetPasswordConfirm extends BaseActionMiddleware
         FrameInterface $frame,
         $out
     ) {
+        if (is_callable([$flash, 'success'])) {
+            $flash->success(trans($out));
+        }
         return $frame->getResponseFactory()->make('', 302, [
-            'location' => '/',
+            'location' => $request->getUri()->getPath(),
         ]);
     }
 
