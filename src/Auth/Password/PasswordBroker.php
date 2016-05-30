@@ -219,13 +219,14 @@ class PasswordBroker implements PasswordBrokerContract
         if (empty($credentials)) {
             return;
         }
-
         $query = $this->createModel()->newQuery();
         foreach ($credentials as $k => $v) {
-            if ($k === 'token') {
+            if ($k == 'token') {
                 continue;
             }
-            $query = $query->where($k, $v);
+            if (strpos('password', $k) === false) {
+                $query = $query->where($k, $v);
+            }
         }
 
         return $query->first();
