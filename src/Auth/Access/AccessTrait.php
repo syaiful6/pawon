@@ -26,7 +26,7 @@ trait AccessTrait
         }
 
         return $frame->getResponseFactory()->make('', 302, [
-            'location', $this->getNoPermissionRedirectPath($request),
+            'location' => $this->getNoPermissionRedirectPath($request),
         ]);
     }
 
