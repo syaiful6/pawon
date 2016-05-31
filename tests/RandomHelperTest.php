@@ -1,6 +1,6 @@
 <?php
 
-namespace Pawon\tests;
+namespace Pawon\Tests;
 
 use PHPUnit_Framework_TestCase;
 use function Pawon\random_sample;

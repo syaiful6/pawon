@@ -1,6 +1,6 @@
 <?php
 
-namespace Pawon\tests;
+namespace Pawon\Tests;
 
 use Pawon\Functional\Curry;
 use PHPUnit_Framework_TestCase;
