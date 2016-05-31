@@ -6,10 +6,10 @@ use Pawon\Functional\Curry;
 
 class Just extends Maybe
 {
-	/**
-	* @wrapped value \Closure
-	*/
-	private $wrapped;
+    /**
+    * @wrapped value \Closure
+    */
+    private $wrapped;
 
     /**
      *
@@ -31,7 +31,7 @@ class Just extends Maybe
             $fn = new Curry($fn);
         }
         $result = $fn($value);
-        return $result instanceof Maybe ? $result : new static($result);
+        return new static($result);
     }
 
     /**
@@ -67,7 +67,6 @@ class Just extends Maybe
     {
         $value = call_user_func($this->wrapped);
 
-        $result = $fn($value);
-        return $result instanceof Maybe ? $result : new static($result);
+        return $fn($value);
     }
 }

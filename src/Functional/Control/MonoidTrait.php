@@ -6,15 +6,15 @@ use function Itertools\reduce;
 
 trait MonoidTrait
 {
-	/**
-	 *
-	 */
-	public static function concat($xs)
-	{
-		$reducer = function ($a, $b) {
-			return $a->append($b);
-		};
+    /**
+     *
+     */
+    public static function concat($xs)
+    {
+        $reducer = function ($a, $b) {
+            return $a->append($b);
+        };
 
-        return reduce($reducer, $xs, static::empty());
-	}
+        return reduce($reducer, $xs, static::mempty());
+    }
 }

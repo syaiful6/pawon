@@ -9,14 +9,14 @@ namespace Pawon\Functional\Control;
  */
 interface Functor
 {
-	/**
-	 * Map a function over wrapped values. then return instance of itself
+    /**
+     * Map a function over wrapped values. then return instance of itself
      * Map knows how to apply functions to values that are wrapped in a context.
      *
      * @param callable $fn
      * @return Functional\Control\Functor
-	 */
-	public function map(callable $fn);
+     */
+    public function map(callable $fn);
 
     /**
      * That is't, because PHP not functional, then we should define how to get

@@ -7,7 +7,7 @@ namespace Pawon\Functional\Control;
  */
 abstract class Maybe implements Monad, Monoid
 {
-    use FunctorTrait, MonoidTrait;
+    use FunctorTrait, ApplicativeTrait, MonoidTrait;
 
     /**
      *
@@ -28,7 +28,7 @@ abstract class Maybe implements Monad, Monoid
     /**
      *
      */
-    public static function empty()
+    public static function mempty()
     {
         return new Nothing();
     }

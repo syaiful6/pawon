@@ -10,9 +10,9 @@ interface Monoid
     public function append(Monoid $other);
 
     /**
-	 * mempty :: m
-	 */
-	public static function empty();
+     * mempty :: m
+     */
+    public static function mempty();
 
     /**
      *

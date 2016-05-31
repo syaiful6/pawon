@@ -10,31 +10,31 @@ use function Itertools\product;
 
 class MonadList implements Monad, Monoid
 {
-	use FunctorTrait, MonoidTrait;
+    use FunctorTrait, MonoidTrait;
 
-	/**
-	 *
-	 */
-	private $wrapped;
+    /**
+     *
+     */
+    private $wrapped;
 
-	/**
-	 *
-	 */
-	public function __construct($wrapped = null)
-	{
-		if ($wrapped === null) {
-			$wrapped = [];
-		}
-		if (!is_array($value) && !$value instanceof \Traversable) {
-			throw new \InvalidArgumentException('Must be traversable');
-		}
+    /**
+     *
+     */
+    public function __construct($wrapped = null)
+    {
+        if ($wrapped === null) {
+            $wrapped = [];
+        }
+        if (!is_array($value) && !$value instanceof \Traversable) {
+            throw new \InvalidArgumentException('Must be traversable');
+        }
         if (!$wrapped instanceof ArrayList) {
             $wrapped = new ArrayList($wrapped);
         }
         $this->wrapped = function () use ($wrapped) {
             return $wrapped;
         };
-	}
+    }
 
     /**
      *
@@ -105,9 +105,13 @@ class MonadList implements Monad, Monoid
     /**
      *
      */
-    public function apply($something)
+    public function apply(Applicative $something)
     {
-        $results = [];
+        if (! $something instanceof MonadList) {
+            throw new \InvalidArgumentException(sprintf(
+                'monadlist only operate to it\'s own instance'
+            ));
+        }
         $product = product($this, $something);
         $mapper = function ($item) {
             list($fn, $x) = $item;
@@ -122,7 +126,7 @@ class MonadList implements Monad, Monoid
     /**
      *
      */
-    public static function empty()
+    public static function mempty()
     {
         return new static();
     }
@@ -152,9 +156,9 @@ class MonadList implements Monad, Monoid
      */
     public function getIterator()
     {
-       $identity = function ($x) {
+        $identity = function ($x) {
             return $x;
-       }
-       return map($identity, call_user_func($this->wrapped));
+        }
+        return map($identity, call_user_func($this->wrapped));
     }
 }

@@ -26,6 +26,22 @@ class MaybeMonadTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
+    public function testJustMapReturnValue()
+    {
+        $add3 = function ($v) {
+            return $v + 3;
+        };
+
+        $two = new Just(2);
+        $mapped = $two->map($add3);
+
+        $this->assertTrue($mapped instanceof Just);
+        $this->assertSame(5, $mapped->extract());
+    }
+
+    /**
+     *
+     */
     public function testMaybeJustExtracting()
     {
         $d = new Just(5);

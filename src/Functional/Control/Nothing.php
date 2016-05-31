@@ -4,12 +4,12 @@ namespace Pawon\Functional\Control;
 
 class Nothing extends Maybe
 {
-	/**
-	 * map a nothing return nothing
-	 */
-	public function map(callable $fn)
+    /**
+     * map a nothing return nothing
+     */
+    public function map(callable $fn)
     {
-    	return clone $this;
+        return clone $this;
     }
 
     /**
